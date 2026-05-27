@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  lastName          String
+  firstName         String
+  // could be 3A or so
+  schoolGrade       String?
+  schoolTeacherName String?
+  eMail             String?
+  active            Boolean  @default(true)
+  books             Book[]
+}
+
+model LoginUser {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String
+  password  String
+  role      String
+  active    Boolean  @default(true)
+}
+
+model Audit {
+  createdAt    DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  eventType    String
+  eventContent String
+  bookid       Int?
+  userid       Int?
+}
+
+model Book {
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  id           Int       @id @default(autoincrement())
+  rentalStatus String    @default("available")
+  rentedDate   DateTime  @default(now())
+  dueDate      DateTime?
+  renewalCount Int
+  title        String
+  subtitle     String?
+  author       String
+  topics       String?
+  imageLink    String?
+
+  //additional fields from OpenBiblio data model
+  isbn                    String?
+  editionDescription      String?
+  publisherLocation       String?
+  pages                   Int?
+  summary                 String?
+  minPlayers              String?
+  publisherName           String?
+  otherPhysicalAttributes String?
+  supplierComment         String?
+  publisherDate           String?
+  physicalSize            String?
+  minAge                  String?
+  maxAge                  String?
+  additionalMaterial      String?
+  //why is this string? In the migration, there were often DM prices or some other text
+  price                   String?
+  externalLinks           String?
+
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId Int?
+}

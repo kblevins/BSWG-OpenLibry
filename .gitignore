@@ -1,0 +1,118 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ─── Dependencies ───────────────────────────────────────────────────
+/node_modules
+/.pnp
+.pnp.js
+
+# ─── Testing ────────────────────────────────────────────────────────
+/coverage
+cypress/screenshots/
+cypress/videos/
+cypress/cypress.env.json
+cypress.env.json
+.env.test
+cypress/downloads/
+
+# ─── Next.js ────────────────────────────────────────────────────────
+/.next/
+/out/
+
+# ─── Production build ──────────────────────────────────────────────
+/build
+
+# ─── OS / editor ───────────────────────────────────────────────────
+.DS_Store
+*.pem
+
+# ─── Debug logs ─────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ─── Environment / secrets ──────────────────────────────────────────
+.env
+.env*.local
+
+# ─── Vercel ─────────────────────────────────────────────────────────
+.vercel
+
+# ─── TypeScript ─────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ─── Database ───────────────────────────────────────────────────────
+# SQLite dev/test databases (production DB lives in database/)
+prisma/dev.db
+prisma/dev.db-journal
+prisma/dev_clean.db
+prisma/dev_original.db
+prisma/dev_anonymised.db
+database/dev.db
+
+# Production database directory (volume-mounted in Docker)
+prisma/database/*
+!prisma/database/automated-test-db-init.db
+
+# ─── Cover images (user-uploaded, not shipped) ─────────────────────
+public/coverimages/*
+!public/coverimages/default.png
+!public/coverimages/default.jpg
+!public/coverimages/defaultBlurred.jpg
+
+# ─── Book labels (legacy label output) ─────────────────────────────
+public/labels/
+
+# ─── Label system configs (database/custom/labels/) ────────────────
+# Ship default configs only; user-created files are ignored.
+# Must stay in sync with .dockerignore so the builder stage is clean.
+
+database/custom/labels/sheets/*
+!database/custom/labels/sheets/avery-l7160.json
+!database/custom/labels/sheets/avery-l7163.json
+!database/custom/labels/sheets/herma-4360.json
+!database/custom/labels/sheets/text-only.json
+!database/custom/labels/sheets/zweckform-3420.json
+!database/custom/labels/sheets/zweckform-3422.json
+!database/custom/labels/sheets/zweckform-3474.json
+!database/custom/labels/sheets/zweckform-3475.json
+!database/custom/labels/sheets/zweckform-3490.json
+!database/custom/labels/sheets/zweckform-3659.json
+!database/custom/labels/sheets/zweckform-3679.json
+!database/custom/labels/sheets/zweckform-5052.json
+
+database/custom/labels/templates/*
+!database/custom/labels/templates/default.json
+!database/custom/labels/templates/text-only.json
+
+# ─── Antolin data ──────────────────────────────────────────────────
+public/antolin/antolingesamt.csv
+
+# ─── Backups ────────────────────────────────────────────────────────
+/backups
+
+# ─── OpenBiblio migration (legacy import tooling) ──────────────────
+openbiblio_migration/*
+pages/api/openbiblioimport/member.json
+importscripts/openbiblio/migrationFile/member.json
+importscripts/openbiblio/migrationFile/biblio.json
+importscripts/openbiblio/migrationFile/biblio_status_hist.json
+importscripts/openbiblio/migrationFile/biblio_field.json
+importscripts/openbiblio/migrationFile/biblio_copy.json
+importscripts/openbiblio/migrationFile/content/biblio
+importscripts/openbiblio/migrationFile/content/biblio_copy
+importscripts/openbiblio/migrationFile/content/biblio_field
+importscripts/openbiblio/migrationFile/content/biblio_status_hist
+importscripts/openbiblio/migrationFile/content/member
+importscripts/openbiblio/coverDownloader/coverapp
+importscripts/openbiblio/input/*.frm
+importscripts/openbiblio/input/*.MYD
+importscripts/openbiblio/input/*.MYI
+importscripts/openbiblio/input/db.opt
+
+# ─── Misc temp files ───────────────────────────────────────────────
+public/~$hnung-template.docx
+
+# ─── MkDocs build output ───────────────────────────────────────────
+doc/mkdocs/site/

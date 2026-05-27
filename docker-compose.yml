@@ -1,0 +1,15 @@
+services:
+  openlibry:
+    image: jzakotnik/openlibry:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist SQLite database on the host
+      - ./database:/app/database
+      # Persist migrations folder so new migrations can be applied
+      - ./prisma/migrations:/app/prisma/migrations:ro
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/database/dev.db
+      - NEXTAUTH_SECRET=${AUTH_SECRET:-changeme}
+    restart: unless-stopped

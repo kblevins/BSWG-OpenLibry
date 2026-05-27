@@ -1,0 +1,216 @@
+import Layout from "@/components/layout/Layout";
+import { getAllBooks, getRentedBooksWithUsers } from "@/entities/book";
+import { getAllUsers } from "@/entities/user";
+import { t } from "@/lib/i18n";
+import dayjs from "dayjs";
+
+import BookLabelEditorCard from "@/components/labels/BookLabelEditorCard";
+import BookLabelPrintCard from "@/components/labels/BookLabelPrintCard";
+import ExcelCard from "@/components/reports/cards/ExcelCard";
+import PdfCatalogCard from "@/components/reports/cards/PdfCatalogCard";
+import ReminderCard from "@/components/reports/cards/ReminderCard";
+import ReportCard from "@/components/reports/cards/ReportCard";
+import UserLabelsCard from "@/components/reports/cards/UserLabelsCard";
+import { useUserLabelFilters } from "@/components/reports/hooks/useUserLabelFilters";
+import TagCloudDashboard from "@/components/reports/TagCloud";
+import { countAudit } from "@/entities/audit";
+import { BookType } from "@/entities/BookType";
+import { prisma } from "@/entities/db";
+import { UserType } from "@/entities/UserType";
+import { LogEvents } from "@/lib/logEvents";
+import { businessLogger } from "@/lib/logger";
+import { convertDateToDayString } from "@/lib/utils/dateutils";
+import {
+  getBookTopicCounts,
+  getSchoolGradeCounts,
+} from "@/lib/utils/topicUtils";
+
+interface ReportPropsType {
+  users: Array<UserType>;
+  books: Array<BookType>;
+  rentals: any;
+  overdueCount: number;
+  nonExtendableCount: number;
+  tagSet: Array<{ topic: string; count: number }>;
+  schoolGradeSet: Array<{ topic: string; count: number }>;
+  auditCount: number;
+}
+
+export default function Reports({
+  users,
+  books,
+  rentals,
+  overdueCount,
+  nonExtendableCount,
+  tagSet,
+  schoolGradeSet,
+  auditCount = 0,
+}: ReportPropsType) {
+  const userLabelFilters = useUserLabelFilters();
+
+  return (
+    <Layout>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start"
+        data-cy="reports-grid"
+      >
+        <ReportCard
+          title={t("reportsPage.cardUsers.title")}
+          subtitle={t("reportsPage.cardUsers.subtitle")}
+          unit={t("reportsPage.cardUsers.unit")}
+          totalNumber={users.length}
+          link="reports/users"
+          dataCyId="users"
+        />
+        <ReportCard
+          title={t("reportsPage.cardBooks.title")}
+          subtitle={t("reportsPage.cardBooks.subtitle")}
+          unit={t("reportsPage.cardBooks.unit")}
+          totalNumber={books.length}
+          link="reports/books"
+          dataCyId="books"
+        />
+        <ReportCard
+          title={t("reportsPage.cardRentals.title")}
+          subtitle={t("reportsPage.cardRentals.subtitle")}
+          unit={t("reportsPage.cardRentals.unit")}
+          totalNumber={rentals.length}
+          link="reports/rentals"
+          dataCyId="rentals"
+        />
+        <ExcelCard dataCy="excel-card" />
+        <ReportCard
+          title={t("reportsPage.cardUserHistory.title")}
+          subtitle={t("reportsPage.cardUserHistory.subtitle")}
+          unit={t("reportsPage.cardUserHistory.unit")}
+          totalNumber={rentals.length}
+          link="reports/userhistory"
+          dataCyId="userhistory"
+        />
+        <ReportCard
+          title={t("reportsPage.cardAudit.title")}
+          subtitle={t("reportsPage.cardAudit.subtitle")}
+          unit={t("reportsPage.cardAudit.unit")}
+          totalNumber={auditCount}
+          link="reports/audit"
+          dataCyId="audit"
+        />
+        {/* Etiketten cards stacked in one column */}
+        <div className="flex flex-col gap-3">
+          <BookLabelPrintCard />
+          <BookLabelEditorCard />
+        </div>
+        <UserLabelsCard
+          title={t("reportsPage.cardUserLabels.title")}
+          subtitle={t("reportsPage.cardUserLabels.subtitle")}
+          link="api/report/userlabels"
+          totalNumber={users.length}
+          startLabel={userLabelFilters.startLabel}
+          setStartLabel={userLabelFilters.setStartLabel}
+          startUserId={userLabelFilters.startUserId}
+          setStartUserId={userLabelFilters.setStartUserId}
+          endUserId={userLabelFilters.endUserId}
+          setEndUserId={userLabelFilters.setEndUserId}
+          idUserFilter={userLabelFilters.idUserFilter}
+          setIdUserFilter={userLabelFilters.setIdUserFilter}
+          topicsFilter={userLabelFilters.schoolgradeFilter}
+          setTopicsFilter={userLabelFilters.setSchoolgradeFilter}
+          allTopics={schoolGradeSet}
+        />
+        <ReminderCard
+          title={t("reportsPage.cardReminder.title")}
+          subtitle={t("reportsPage.cardReminder.subtitle")}
+          link="/api/report/reminder"
+          overdueCount={overdueCount}
+          nonExtendableCount={nonExtendableCount}
+        />
+
+        <PdfCatalogCard />
+      </div>
+      <TagCloudDashboard tagsSet={tagSet} />
+    </Layout>
+  );
+}
+
+export async function getServerSideProps() {
+  const REMINDER_RENEWAL_COUNT = process.env.REMINDER_RENEWAL_COUNT
+    ? parseInt(process.env.REMINDER_RENEWAL_COUNT)
+    : 5;
+
+  const allUsers = await getAllUsers(prisma);
+  const users = allUsers.map((u) => {
+    const newUser = { ...u } as any;
+    newUser.createdAt = convertDateToDayString(u.createdAt);
+    newUser.updatedAt = convertDateToDayString(u.updatedAt);
+    return newUser;
+  });
+
+  const allBooks = await getAllBooks(prisma);
+  const books = allBooks.map((b) => {
+    const newBook = { ...b } as any;
+    newBook.createdAt = convertDateToDayString(b.createdAt);
+    newBook.updatedAt = convertDateToDayString(b.updatedAt);
+    newBook.rentedDate = b.rentedDate
+      ? convertDateToDayString(b.rentedDate)
+      : "";
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
+    return newBook;
+  });
+
+  const allRentals = await getRentedBooksWithUsers(prisma);
+  const rentals = allRentals.map((r) => {
+    const due = dayjs(r.dueDate);
+    const today = dayjs();
+    const diff = today.diff(due, "days");
+
+    return {
+      id: r.id,
+      title: r.title || "",
+      lastName: r.user?.lastName || "",
+      firstName: r.user?.firstName || "",
+      remainingDays: diff,
+      dueDate: convertDateToDayString(due.toDate()),
+      renewalCount: r.renewalCount ?? 0,
+      userid: r.user?.id ?? null,
+    };
+  });
+
+  const tagSet = getBookTopicCounts(allBooks);
+  const schoolGradeSet = getSchoolGradeCounts(allUsers);
+
+  const overdueRentals = rentals.filter((r) => r.remainingDays > 0);
+  const overdueCount = new Set(
+    overdueRentals.map((r) => r.userid).filter(Boolean),
+  ).size;
+  const nonExtendableCount = new Set(
+    overdueRentals
+      .filter((r) => r.renewalCount >= REMINDER_RENEWAL_COUNT)
+      .map((r) => r.userid)
+      .filter(Boolean),
+  ).size;
+
+  businessLogger.debug(
+    {
+      event: LogEvents.PAGE_LOAD,
+      page: "/reports",
+      userCount: users.length,
+      bookCount: books.length,
+      rentalCount: rentals.length,
+    },
+    "Reports page loaded",
+  );
+  const auditCount = (await countAudit(prisma)) ?? 0;
+
+  return {
+    props: {
+      users,
+      books,
+      rentals,
+      overdueCount,
+      nonExtendableCount,
+      tagSet,
+      schoolGradeSet,
+      auditCount,
+    },
+  };
+}
