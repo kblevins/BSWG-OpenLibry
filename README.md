@@ -1,4 +1,12 @@
-# OpenLibry
+# BSWG-OpenLibry
+
+An adaptation of the [OpenLibry](https://github.com/jzakotnik/openlibry) library management system for the Brazos Spinners and Weavers Guild.
+
+See [openlibry-dev-roadmap.md](openlibry-dev-roadmap.md) for the development plan.
+
+---
+
+## Upstream: OpenLibry
 
 **Die einfache und freie Software für die Schulbibliothek**
 
@@ -91,5 +99,3 @@ OpenLibry entstand aus dem Bedarf einer Grundschule und wird ehrenamtlich weiter
 <p align="center">
   <strong>OpenLibry</strong> – Entwickelt mit ❤️ für Schulbibliotheken und ehrenamtliche Helfer
 </p>
-# BSWG-OpenLibry
-an adaptation of the openlibry system for the Brazos Spinners and Weavers Guild
