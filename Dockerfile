@@ -17,7 +17,7 @@ RUN npm install --ignore-scripts
 FROM base AS builder
 
 ENV CYPRESS_INSTALL_BINARY=0
-ENV DATABASE_URL="file:./dummy.db"
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install -g npm@11.6.4
@@ -36,9 +36,6 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
-# Your DB is bind-mounted here from the host
-ENV DATABASE_URL="file:/app/database/dev.db"
-
 # Copy runtime artifacts (Next.js standalone output recommended)
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
@@ -52,8 +49,7 @@ COPY --from=builder /app/prisma.config.mjs ./
 # (existing files are never overwritten, so school customisations survive).
 COPY --from=builder /app/database/custom/labels /app/defaults/labels
 
-# Ensure DB directory exists and fix perms
-RUN mkdir -p /app/database && chown -R node:node /app
+RUN chown -R node:node /app
 
 # Add entrypoint that runs Prisma schema sync on first run / on pending migrations
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
