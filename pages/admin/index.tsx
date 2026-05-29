@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   ArrowRight,
   Book,
+  BookPlus,
   CalendarClock,
   CheckCircle,
   Clock,
@@ -386,6 +387,13 @@ export default function AdminPage() {
             icon={Settings}
             onClick={() => router.push("/admin/settings")}
             colorVar="var(--secondary)"
+          />
+          <ActionCard
+            title={t("adminPage.importTitle")}
+            description={t("adminPage.importDescription")}
+            icon={BookPlus}
+            onClick={() => router.push("/admin/import")}
+            colorVar="var(--primary)"
           />
         </div>
 

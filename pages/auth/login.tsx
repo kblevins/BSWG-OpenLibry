@@ -1,55 +1,10 @@
-import { Loader2, Lock } from "lucide-react";
 import { signIn } from "next-auth/react";
-import React, { useState } from "react";
-
-import type {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
-import { getCsrfToken } from "next-auth/react";
 import Head from "next/head";
 
 import { t } from "@/lib/i18n";
 import loginsplash from "./loginsplashscreen.jpg";
 
-export default function Login({
-  csrfToken,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      const res = await signIn("credentials", {
-        user,
-        password,
-        hiddenFieldName: csrfToken,
-        callbackUrl: "/",
-        redirect: false,
-      });
-
-      if (res?.ok) {
-        // Successful — redirect manually so we can handle errors first
-        window.location.href = res.url ?? "/";
-        return;
-      }
-
-      setError(t("login.errorFailed"));
-    } catch {
-      setError(t("login.errorConnection"));
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const canSubmit = user.trim().length > 0 && password.length > 0;
-
+export default function Login() {
   return (
     <>
       <Head>
@@ -70,17 +25,11 @@ export default function Login({
           <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
         </div>
 
-        {/* Right: Login form */}
+        {/* Right: Sign-in panel */}
         <div className="flex-1 flex items-center justify-center bg-white px-6 py-12 shadow-xl">
           <div className="w-full max-w-sm">
-            {/* Icon + Heading */}
+            {/* Heading */}
             <div className="text-center mb-8">
-              <div
-                className="mx-auto mb-4 w-14 h-14 rounded-2xl flex items-center justify-center"
-                style={{ backgroundColor: "#12556F" }}
-              >
-                <Lock className="w-6 h-6 text-white" />
-              </div>
               <h1 className="text-xl font-bold text-gray-900">
                 {t("login.heading")}
               </h1>
@@ -89,83 +38,40 @@ export default function Login({
               </p>
             </div>
 
-            {/* Error banner */}
-            {error && (
-              <div className="mb-4 px-4 py-2.5 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
-                {error}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="user"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  {t("login.labelUsername")}
-                </label>
-                <input
-                  id="user"
-                  name="user"
-                  type="text"
-                  required
-                  autoComplete="username"
-                  autoFocus
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg outline-none transition-colors focus:border-[#12556F] focus:ring-2 focus:ring-[#12556F]/20 placeholder-gray-400"
-                  placeholder={t("login.placeholderUsername")}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  {t("login.labelPassword")}
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg outline-none transition-colors focus:border-[#12556F] focus:ring-2 focus:ring-[#12556F]/20 placeholder-gray-400"
-                  placeholder={t("login.placeholderPassword")}
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={!canSubmit || isLoading}
-                className="w-full flex items-center justify-center gap-2 px-5 py-2.5 mt-2 text-sm font-medium text-white rounded-lg shadow-sm hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                style={{ backgroundColor: "#12556F" }}
+            {/* Google sign-in button */}
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/" })}
+              className="w-full flex items-center justify-center gap-3 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition-all active:scale-[0.98]"
+            >
+              {/* Google "G" logo */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 48 48"
+                className="w-5 h-5"
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    {t("login.submitting")}
-                  </>
-                ) : (
-                  t("login.submit")
-                )}
-              </button>
-            </form>
+                <path
+                  fill="#EA4335"
+                  d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                />
+                <path
+                  fill="#4285F4"
+                  d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                />
+                <path fill="none" d="M0 0h48v48H0z" />
+              </svg>
+              {t("login.signInWithGoogle")}
+            </button>
           </div>
         </div>
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return {
-    props: {
-      csrfToken: await getCsrfToken(context),
-    },
-  };
 }

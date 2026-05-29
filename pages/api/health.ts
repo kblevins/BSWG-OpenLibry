@@ -130,7 +130,8 @@ export default async function handle(
   // System information
   const totalMem = os.totalmem();
   const freeMem = os.freemem();
-  const usedMem = totalMem - freeMem;
+  // RSS = memory actually held by the Node.js process, not total OS usage
+  const rss = process.memoryUsage().rss;
 
   const response: HealthCheckResponse = {
     status: "ok",
@@ -154,8 +155,8 @@ export default async function handle(
       memory: {
         total: totalMem,
         free: freeMem,
-        used: usedMem,
-        usedPercent: Math.round((usedMem / totalMem) * 100),
+        used: rss,
+        usedPercent: Math.round((rss / totalMem) * 100),
       },
     },
   };
