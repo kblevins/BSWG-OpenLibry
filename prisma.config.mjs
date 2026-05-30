@@ -1,13 +1,14 @@
 import { defineConfig } from "prisma/config";
 
-// Railway's internal PostgreSQL (postgres.railway.internal) does not use SSL.
-// Appending sslmode=disable prevents the migration engine from attempting SSL
-// negotiation, which fails and is misreported as P1000 auth failure.
+// Railway internal connections (postgres.railway.internal) do not use SSL.
+// Railway public proxy connections require SSL.
 const rawUrl = process.env.DATABASE_URL ?? "";
-const dbUrl =
-  rawUrl && !rawUrl.includes("sslmode")
-    ? rawUrl + (rawUrl.includes("?") ? "&" : "?") + "sslmode=disable"
-    : rawUrl;
+function buildMigrateUrl(url) {
+  if (!url || url.includes("sslmode")) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  const mode = url.includes(".railway.internal") ? "disable" : "require";
+  return `${url}${sep}sslmode=${mode}`;
+}
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -15,6 +16,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: dbUrl,
+    url: buildMigrateUrl(rawUrl),
   },
 });
