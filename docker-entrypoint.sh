@@ -11,7 +11,7 @@ echo "DATABASE_URL: $DATABASE_URL"
 # Run any pending migrations on every startup.
 # For PostgreSQL this is safe and idempotent — already-applied migrations are skipped.
 echo "Running database migrations..."
-npx prisma migrate deploy
+NODE_TLS_REJECT_UNAUTHORIZED=0 npx prisma migrate deploy
 
 # Ensure the custom templates directory exists
 if [ ! -d "$CUSTOM_DIR" ]; then
