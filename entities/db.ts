@@ -1,9 +1,11 @@
-// @/entities/db.ts (or wherever your prisma client is defined)
 import { LogEvents } from "@/lib/logEvents";
 import { businessLogger, errorLogger } from "@/lib/logger";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL! });
+import pg from "pg";
+
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 
 declare global {
   var prisma: PrismaClient | undefined;
