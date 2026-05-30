@@ -7,10 +7,9 @@ import pg from "pg";
 const isRailwayInternal = process.env.DATABASE_URL?.includes(".railway.internal");
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production" && !isRailwayInternal
-      ? { rejectUnauthorized: false }
-      : undefined,
+  ssl: process.env.NODE_ENV === "production" && !isRailwayInternal
+    ? { rejectUnauthorized: false }
+    : false,
 });
 const adapter = new PrismaPg(pool);
 
