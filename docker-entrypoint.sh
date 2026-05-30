@@ -6,7 +6,13 @@ DEFAULTS_LABELS_DIR="/app/defaults/labels"
 CUSTOM_LABELS_DIR="$CUSTOM_DIR/labels"
 
 echo "=== OpenLibry entrypoint ==="
-echo "DATABASE_URL: $DATABASE_URL"
+
+if [ -z "$DATABASE_URL" ]; then
+  echo "ERROR: DATABASE_URL is not set. Add it to your Railway service variables."
+  exit 1
+fi
+
+echo "DATABASE_URL is set (host: $(echo "$DATABASE_URL" | sed 's|.*@||' | sed 's|/.*||'))"
 
 # Run any pending migrations on every startup.
 # For PostgreSQL this is safe and idempotent — already-applied migrations are skipped.
