@@ -1,14 +1,14 @@
 import { defineConfig } from "prisma/config";
 
-// DATABASE_URL is read here in Node.js — safe from shell $ expansion issues.
-// Internal Railway URLs (*.railway.internal) do not use SSL; all others require it.
+// Railway's managed PostgreSQL requires SSL on all connections, including internal
+// (*.railway.internal). sslmode=require means "use SSL, skip cert verification"
+// per the PostgreSQL spec — no NODE_TLS_REJECT_UNAUTHORIZED needed.
 const migrateUrl = process.env.DATABASE_URL ?? "";
 
 function withSsl(url) {
   if (!url || url.includes("sslmode")) return url;
   const sep = url.includes("?") ? "&" : "?";
-  const mode = url.includes(".railway.internal") ? "disable" : "require";
-  return `${url}${sep}sslmode=${mode}`;
+  return `${url}${sep}sslmode=require`;
 }
 
 export default defineConfig({
