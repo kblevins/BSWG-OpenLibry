@@ -14,10 +14,28 @@ fi
 
 echo "DATABASE_URL is set (host: $(echo "$DATABASE_URL" | sed 's|.*@||' | sed 's|/.*||'))"
 
+# Append sslmode to DATABASE_URL if not already present.
+# Internal Railway URLs (*.railway.internal) do not use SSL; external/public proxy URLs require it.
+if ! echo "$DATABASE_URL" | grep -q "sslmode"; then
+  if echo "$DATABASE_URL" | grep -q "railway.internal"; then
+    case "$DATABASE_URL" in
+      *\?*) export DATABASE_URL="${DATABASE_URL}&sslmode=disable" ;;
+      *)    export DATABASE_URL="${DATABASE_URL}?sslmode=disable" ;;
+    esac
+    echo "Internal Railway URL detected — sslmode=disable appended"
+  else
+    case "$DATABASE_URL" in
+      *\?*) export DATABASE_URL="${DATABASE_URL}&sslmode=require" ;;
+      *)    export DATABASE_URL="${DATABASE_URL}?sslmode=require" ;;
+    esac
+    echo "External URL detected — sslmode=require appended"
+  fi
+fi
+
 # Run any pending migrations on every startup.
 # For PostgreSQL this is safe and idempotent — already-applied migrations are skipped.
 echo "Running database migrations..."
-NODE_TLS_REJECT_UNAUTHORIZED=0 npx prisma migrate deploy
+npx prisma migrate deploy
 
 # Ensure the custom templates directory exists
 if [ ! -d "$CUSTOM_DIR" ]; then
