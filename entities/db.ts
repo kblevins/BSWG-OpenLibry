@@ -10,7 +10,7 @@ const pool = new pg.Pool({
   ssl:
     process.env.NODE_ENV === "production" && !isRailwayInternal
       ? { rejectUnauthorized: false }
-      : undefined,
+      : false,
 });
 const adapter = new PrismaPg(pool);
 
@@ -48,3 +48,4 @@ export async function reconnectPrisma() {
     throw error;
   }
 }
+
