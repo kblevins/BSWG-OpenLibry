@@ -13,12 +13,29 @@ if [ -z "$DATABASE_URL" ]; then
 fi
 
 echo "DATABASE_URL is set (host: $(echo "$DATABASE_URL" | sed 's|.*@||' | sed 's|/.*||'))"
-# SSL mode is handled in Node.js (prisma.config.mjs for migrations, db.ts for the app).
-# Do NOT reassign DATABASE_URL here — shell double-quote expansion corrupts passwords
-# that contain $ characters (common in Railway auto-generated credentials).
+
+# Diagnostic: test raw pg connection before Prisma attempts migration.
+# This tells us whether the issue is credentials/network (pg fails too)
+# or Prisma-specific (pg succeeds but Prisma fails).
+echo "=== Diagnostic: testing pg connection ==="
+node -e "
+const { Client } = require('pg');
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+client.connect()
+  .then(() => {
+    console.log('pg connect: SUCCESS');
+    return client.end();
+  })
+  .catch(err => {
+    console.log('pg connect FAILED — code:', err.code, '| message:', err.message);
+  });
+" || true
+echo "=== End diagnostic ==="
 
 # Run any pending migrations on every startup.
-# For PostgreSQL this is safe and idempotent — already-applied migrations are skipped.
 echo "Running database migrations..."
 npx prisma migrate deploy
 
