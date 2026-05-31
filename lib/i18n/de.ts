@@ -1072,6 +1072,8 @@ export const de = {
     settingsDescription: "Konfiguration anzeigen",
     importTitle: "ISBN-Import",
     importDescription: "Bücher aus einer Datei massenimportieren",
+    manageUsersTitle: "Benutzer verwalten",
+    manageUsersDescription: "Steuern, wer sich anmelden darf",
     // Status banner — main "Alles in Ordnung" / "Warnungen" / "Fehler" labels
     statusOk: "Alles in Ordnung",
     statusWarning: "Warnungen vorhanden",
@@ -1182,6 +1184,33 @@ export const de = {
   rentalsServerError: {
     invalidServerData: "Ungültige Daten vom Server erhalten",
     fetchFailed: "Fehler beim Laden der Ausleihdaten",
+  },
+
+  loginUsersPage: {
+    pageTitle: "Benutzer verwalten | OpenLibry",
+    heading: "Benutzer verwalten",
+    subheading: "Gmail-Adressen, die sich anmelden dürfen",
+    backToAdmin: "Zurück zur Administration",
+    addHeading: "Benutzer hinzufügen",
+    emailPlaceholder: "gmail@example.com",
+    addButton: "Hinzufügen",
+    roleAdmin: "Admin",
+    roleUser: "Benutzer",
+    tableEmail: "E-Mail",
+    tableRole: "Rolle",
+    tableStatus: "Status",
+    tableActions: "Aktionen",
+    statusActive: "Aktiv",
+    statusInactive: "Inaktiv",
+    enableButton: "Aktivieren",
+    disableButton: "Deaktivieren",
+    deleteButton: "Löschen",
+    deleteConfirm: "{email} wirklich entfernen?",
+    emptyState: "Noch keine Benutzer. Füge oben eine Gmail-Adresse hinzu.",
+    errorAdd: "Fehler beim Hinzufügen des Benutzers.",
+    errorUpdate: "Fehler beim Aktualisieren des Benutzers.",
+    errorDelete: "Fehler beim Löschen des Benutzers.",
+    roleNote: "Rollen werden gespeichert, aber noch nicht zur Zugangskontrolle genutzt. Alle angemeldeten Benutzer haben denselben Zugriff.",
   },
 
   // ─── Phase 11f: site footer (rendered on every Layout-wrapped page) ───

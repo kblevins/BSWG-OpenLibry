@@ -278,9 +278,45 @@ node scripts/import-books.mjs my-isbn-list.txt
 
 ---
 
+## Post-deployment changes (completed after initial deploy)
+
+### Google SSO — open to any Gmail + email allowlist
+
+The OAuth consent screen was changed from **Internal** to **External** in Google Cloud
+Console so any Gmail address can authenticate. To prevent unwanted access, a `signIn`
+callback was added to `pages/api/auth/[...nextauth].ts` that checks the signing-in
+email against the `LoginUser` table (`active = true`). Only pre-approved emails are
+admitted.
+
+A management UI was built at `/admin/loginusers` (linked from the admin dashboard) that
+lets you add Gmail addresses, toggle active/inactive, change roles, and delete entries
+without touching the database directly.
+
+### Locale baked into Docker build
+
+`NEXT_PUBLIC_OPENLIBRY_LOCALE` is a Next.js build-time variable — it is inlined into the
+client bundle during `next build` and cannot be overridden by Railway runtime environment
+variables. The Dockerfile `builder` stage now sets it via a Docker `ARG` that defaults to
+`en`:
+
+```dockerfile
+ARG NEXT_PUBLIC_OPENLIBRY_LOCALE=en
+ENV NEXT_PUBLIC_OPENLIBRY_LOCALE=${NEXT_PUBLIC_OPENLIBRY_LOCALE}
+```
+
+If a future deployment needs a different locale, set the Railway **Build Variable**
+`NEXT_PUBLIC_OPENLIBRY_LOCALE=de` (or `es`). Runtime env vars for this key have no effect.
+
+---
+
 ## Release 1 Production Checklist
 
-- [ ] Team members can log in with Google Workspace accounts
+- [x] Login page loads in English
+- [x] Google SSO open to any Gmail account
+- [x] Email allowlist enforced via `LoginUser` table and `signIn` callback
+- [x] `/admin/loginusers` page available for managing allowed accounts
+- [ ] Your Gmail address added to `LoginUser` before deploying the `signIn` callback
+- [ ] Team members can log in successfully
 - [ ] Full book catalog is visible and searchable
 - [ ] Staff can check items in and out
 - [ ] HTTPS is active (automatic on Railway)
@@ -290,8 +326,64 @@ node scripts/import-books.mjs my-isbn-list.txt
 
 ---
 
+## Future tasks
+
+### Role-based access control
+
+The `LoginUser` table has a `role` field (`admin` or `user`) that is stored and visible
+in the `/admin/loginusers` UI but is **not yet enforced**. All authenticated users
+currently have the same access level.
+
+To enforce roles:
+
+1. Expose the role in the NextAuth JWT so it is available in the session:
+
+```ts
+// pages/api/auth/[...nextauth].ts
+callbacks: {
+  async jwt({ token, user: googleUser }) {
+    if (googleUser?.email) {
+      const dbUser = await getLoginUserByEmail(prisma, googleUser.email);
+      token.role = dbUser?.role ?? "user";
+    }
+    return token;
+  },
+  async session({ session, token }) {
+    if (session.user) session.user.role = token.role as string;
+    return session;
+  },
+  async signIn({ user }) { /* existing check */ },
+},
+```
+
+2. Extend the NextAuth session type in `types/next-auth.d.ts`:
+
+```ts
+declare module "next-auth" {
+  interface Session {
+    user: { role?: string } & DefaultSession["user"];
+  }
+}
+```
+
+3. Guard admin pages in `getServerSideProps`:
+
+```ts
+const session = await getServerSession(context.req, context.res, authOptions);
+if (session?.user?.role !== "admin") {
+  return { redirect: { destination: "/", permanent: false } };
+}
+```
+
+4. Guard admin API routes with the same session check.
+
+---
+
 ## Ongoing maintenance notes
 
+- **Adding users**: navigate to `/admin/loginusers` to add or disable Gmail addresses.
+  The `role` field defaults to `user`; set it to `admin` for staff who need admin access
+  once role enforcement is implemented.
 - **Database backups**: Railway backs up PostgreSQL daily by default. Verify the retention
   window in the PostgreSQL service settings and test a restore before going live.
 - **Local dev**: Keep your local PostgreSQL Docker container running when developing.

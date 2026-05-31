@@ -3,6 +3,40 @@ import { errorLogger } from "@/lib/logger";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { LoginUserType } from "./LoginUserType";
 
+export async function getLoginUserByEmail(client: PrismaClient, email: string) {
+  try {
+    return await client.loginUser.findFirst({
+      where: { email, active: true },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError ||
+      e instanceof Prisma.PrismaClientValidationError
+    ) {
+      errorLogger.error(
+        {
+          event: LogEvents.DB_ERROR,
+          operation: "getLoginUserByEmail",
+          email,
+          error: e instanceof Error ? e.message : String(e),
+        },
+        "Error in retrieving login user by email"
+      );
+    } else {
+      errorLogger.error(
+        {
+          event: LogEvents.DB_ERROR,
+          operation: "getLoginUserByEmail",
+          email,
+          error: e instanceof Error ? e.message : String(e),
+        },
+        "Error in retrieving login user by email with no known Prisma error"
+      );
+    }
+    throw e;
+  }
+}
+
 export async function getLoginUser(client: PrismaClient, username: string) {
   try {
     return await client.loginUser.findUnique({

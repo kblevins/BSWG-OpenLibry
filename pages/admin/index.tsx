@@ -15,6 +15,7 @@ import {
   Loader2,
   RefreshCw,
   Settings,
+  ShieldCheck,
   Users,
   XCircle,
 } from "lucide-react";
@@ -394,6 +395,13 @@ export default function AdminPage() {
             icon={BookPlus}
             onClick={() => router.push("/admin/import")}
             colorVar="var(--primary)"
+          />
+          <ActionCard
+            title={t("adminPage.manageUsersTitle")}
+            description={t("adminPage.manageUsersDescription")}
+            icon={ShieldCheck}
+            onClick={() => router.push("/admin/loginusers")}
+            colorVar="var(--warning)"
           />
         </div>
 
