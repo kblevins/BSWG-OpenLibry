@@ -28,6 +28,11 @@ COPY . .
 # Generate Prisma Client at build time
 RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED=1
+# Locale must be set at build time so Next.js inlines it into the client bundle.
+# NEXT_PUBLIC_* vars set only in Railway runtime env are too late — next build
+# has already run and the client JS cannot read them.
+ARG NEXT_PUBLIC_OPENLIBRY_LOCALE=en
+ENV NEXT_PUBLIC_OPENLIBRY_LOCALE=${NEXT_PUBLIC_OPENLIBRY_LOCALE}
 RUN npm run build
 
 # ---- Runner (slim) ----
