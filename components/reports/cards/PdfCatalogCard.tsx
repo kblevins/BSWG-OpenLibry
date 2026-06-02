@@ -19,16 +19,16 @@ export default function PdfCatalogCard() {
     setError(null);
     try {
       const res = await fetch("/api/report/pdfcatalog");
-      if (!res.ok) throw new Error(`Fehler ${res.status}`);
+      if (!res.ok) throw new Error(`Error ${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `katalog_${new Date().toISOString().split("T")[0]}.pdf`;
+      a.download = `catalog_${new Date().toISOString().split("T")[0]}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unbekannter Fehler");
+      setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ export default function PdfCatalogCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileDown className="w-5 h-5 text-primary" />
-          Katalog
+          Catalog
         </CardTitle>
         <CardDescription>Full catalog as PDF</CardDescription>
       </CardHeader>
@@ -58,10 +58,10 @@ export default function PdfCatalogCard() {
               data-cy="pdf-catalog-download-button"
             >
               <FileDown className="w-4 h-4 mr-2" />
-              Katalog herunterladen
+              Catalog herunterladen
             </Button>
             {error && (
-              <p className="text-sm text-destructive">Fehler: {error}</p>
+              <p className="text-sm text-destructive">Error: {error}</p>
             )}
           </div>
         )}
