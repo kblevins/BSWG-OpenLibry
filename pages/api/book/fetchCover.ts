@@ -110,14 +110,20 @@ export default async function handler(
           firstItem?.volumeInfo?.imageLinks?.thumbnail ??
           firstItem?.volumeInfo?.imageLinks?.smallThumbnail;
 
-        // imageLinks is only present in the API response when Google has a real
-        // cover scan. Use it as the existence gate, then request a larger size
-        // by swapping zoom=1 (thumbnail) for zoom=3 for better resolution.
-        if (id && thumbnail) {
-          return thumbnail.replace(/zoom=\d/, "zoom=3").replace(/&source=[^&]*/, "");
+        if (!id) return null;
+
+        // When imageLinks is present, use it (upgrading to https and requesting
+        // a larger size by swapping zoom=1 for zoom=3).
+        if (thumbnail) {
+          return thumbnail
+            .replace(/^http:/, "https:")
+            .replace(/zoom=\d/, "zoom=3")
+            .replace(/&source=[^&]*/, "");
         }
 
-        return null;
+        // imageLinks is often absent from the list-search response even when
+        // a cover exists — construct the URL directly from the volume ID.
+        return `https://books.google.com/books/content?id=${id}&printsec=frontcover&img=1&zoom=3`;
       },
       logEvent: LogEvents.COVER_FETCHED_GOOGLE,
     },
