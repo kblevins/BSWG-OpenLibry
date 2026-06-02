@@ -90,20 +90,14 @@ function checkPath(
   }
 }
 
-// Extract database path from DATABASE_URL
-function getDatabasePath(): string {
-  const dbUrl = process.env.DATABASE_URL || "file:./database/dev.db";
-  // Handle both "file:./path" and "file:/path" formats
+// Returns the SQLite file path for a file: DATABASE_URL, or null for postgres/mysql URLs.
+function getSqliteDbPath(): string | null {
+  const dbUrl = process.env.DATABASE_URL || "";
   const match = dbUrl.match(/^file:(\.\/)?(.+)$/);
-  if (match) {
-    const relativePath = match[2];
-    // If it starts with /, it's absolute in Docker context
-    if (relativePath.startsWith("/")) {
-      return relativePath;
-    }
-    return path.join(process.cwd(), relativePath);
-  }
-  return path.join(process.cwd(), "database", "dev.db");
+  if (!match) return null;
+  const relativePath = match[2];
+  if (relativePath.startsWith("/")) return relativePath;
+  return path.join(process.cwd(), relativePath);
 }
 
 // Format bytes to human readable
@@ -173,45 +167,48 @@ export default async function handle(
   }
 
   // 1. Check database connectivity
-  const dbPath = getDatabasePath();
-  const dbCheck = checkPath(dbPath, "file");
+  const sqlitePath = getSqliteDbPath();
+  const isPostgres = !sqlitePath;
 
-  if (!dbCheck.exists) {
-    response.checks.database = {
-      status: "error",
-      message: "Database file not found",
-      details: {
-        path: dbPath,
-        databaseUrl: process.env.DATABASE_URL,
-      },
-    };
-    response.status = "error";
-  } else if (!dbCheck.readable) {
-    response.checks.database = {
-      status: "error",
-      message: "Database file not readable (permission error)",
-      details: { path: dbPath },
-    };
-    response.status = "error";
-  } else {
-    // File exists and is readable, try to actually query
+  if (sqlitePath) {
+    // SQLite: check the file exists before querying
+    const dbCheck = checkPath(sqlitePath, "file");
+    if (!dbCheck.exists) {
+      response.checks.database = {
+        status: "error",
+        message: "Database file not found",
+        details: { path: sqlitePath, databaseUrl: process.env.DATABASE_URL },
+      };
+      response.status = "error";
+    } else if (!dbCheck.readable) {
+      response.checks.database = {
+        status: "error",
+        message: "Database file not readable (permission error)",
+        details: { path: sqlitePath },
+      };
+      response.status = "error";
+    }
+  }
+
+  // For PostgreSQL (or a SQLite file that exists), test the actual connection
+  if (isPostgres || response.checks.database.status === "ok") {
     try {
       await prisma.$queryRaw`SELECT 1`;
       response.checks.database = {
         status: "ok",
-        message: "Database connection successful",
-        details: {
-          path: dbPath,
-          size: dbCheck.size,
-          sizeFormatted: dbCheck.size ? formatBytes(dbCheck.size) : undefined,
-        },
+        message: isPostgres
+          ? "PostgreSQL connection successful"
+          : "Database connection successful",
+        details: isPostgres
+          ? { databaseUrl: process.env.DATABASE_URL?.replace(/:\/\/[^@]+@/, "://<credentials>@") }
+          : { path: sqlitePath },
       };
     } catch (error) {
       response.checks.database = {
         status: "error",
         message: "Database connection failed",
         details: {
-          path: dbPath,
+          databaseUrl: process.env.DATABASE_URL?.replace(/:\/\/[^@]+@/, "://<credentials>@"),
           error: error instanceof Error ? error.message : String(error),
         },
       };
@@ -317,7 +314,10 @@ export default async function handle(
 
   // 3. Check required folders
   const requiredFolders = [
-    { name: "database", path: path.dirname(dbPath), mustBeWritable: true },
+    // Only check the SQLite directory for SQLite installs; PostgreSQL has no local file.
+    ...(sqlitePath
+      ? [{ name: "database", path: path.dirname(sqlitePath), mustBeWritable: true }]
+      : []),
     {
       name: "public",
       path: path.join(process.cwd(), "public"),
