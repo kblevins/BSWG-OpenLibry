@@ -1,5 +1,6 @@
 import { AntolinResultType } from "@/entities/AntolinResultsType";
 import { BookType } from "@/entities/BookType";
+import { normalizeToIsbn13 } from "@/lib/isbn-services/types";
 import { uploadCoverBlob } from "@/lib/utils/coverutils";
 import { convertStringToDay } from "@/lib/utils/dateutils";
 import { useRouter } from "next/router";
@@ -153,7 +154,7 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
       return;
     }
 
-    const cleanedIsbn = isbn.replace(/[^0-9X]/gi, "");
+    const cleanedIsbn = normalizeToIsbn13(isbn) ?? isbn.replace(/[^0-9X]/gi, "");
     if (!cleanedIsbn) {
       toast.info("ISBN is not valid (no numbers found).");
       return;

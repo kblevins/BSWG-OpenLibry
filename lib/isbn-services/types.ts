@@ -34,11 +34,17 @@ export interface IsbnLookupService {
 }
 
 /**
- * Check if a string looks like an ISBN (10 or 13 digits, optionally with hyphens)
+ * Check if a string looks like an ISBN (10 or 13 digits, optionally with hyphens).
+ * Also accepts 9-digit strings — a leading zero may have been stripped by a
+ * spreadsheet program that stored the ISBN as a number.
  */
 export function isIsbnLike(value: string): boolean {
   const cleaned = value.replace(/[-\s]/g, "");
-  return /^(978|979)\d{10}$/.test(cleaned) || /^\d{9}[\dXx]$/.test(cleaned);
+  return (
+    /^(978|979)\d{10}$/.test(cleaned) || // ISBN-13
+    /^\d{9}[\dXx]$/.test(cleaned) ||      // ISBN-10
+    /^\d{9}$/.test(cleaned)               // ISBN-10 with leading zero stripped
+  );
 }
 
 /**
@@ -46,6 +52,46 @@ export function isIsbnLike(value: string): boolean {
  */
 export function normalizeIsbn(value: string): string {
   return value.replace(/[-\s]/g, "");
+}
+
+/**
+ * Normalize any raw ISBN input to a canonical 13-digit ISBN-13 string.
+ *
+ * Handles:
+ * - Stripping dashes, spaces, and other decorators
+ * - 9-digit strings: treated as ISBN-10 whose leading "0" was stripped by a
+ *   spreadsheet that stored the value as a number  (e.g. "0596001088" → "596001088")
+ * - 10-digit strings: converted from ISBN-10 to ISBN-13
+ * - 13-digit strings: returned as-is after a basic prefix check (978 / 979)
+ *
+ * Returns null when the input cannot be mapped to any valid ISBN form.
+ */
+export function normalizeToIsbn13(raw: string): string | null {
+  const digits = raw.replace(/[^0-9Xx]/g, "").toUpperCase();
+
+  if (digits.length === 9) {
+    // Restore the leading zero that the spreadsheet stripped
+    return _isbn10ToIsbn13("0" + digits);
+  }
+  if (digits.length === 10) {
+    if (!/^\d{9}[\dX]$/.test(digits)) return null;
+    return _isbn10ToIsbn13(digits);
+  }
+  if (digits.length === 13) {
+    if (!/^97[89]\d{10}$/.test(digits)) return null;
+    return digits;
+  }
+  return null;
+}
+
+/** Convert a 10-digit ISBN-10 to ISBN-13. The old check digit is discarded. */
+function _isbn10ToIsbn13(isbn10: string): string {
+  const base = "978" + isbn10.slice(0, 9);
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(base[i], 10) * (i % 2 === 0 ? 1 : 3);
+  }
+  return base + ((10 - (sum % 10)) % 10);
 }
 
 /**

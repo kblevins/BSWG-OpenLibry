@@ -1,3 +1,4 @@
+import { normalizeToIsbn13 } from "@/lib/isbn-services/types";
 import { LogEvents } from "@/lib/logEvents";
 import { businessLogger, errorLogger } from "@/lib/logger";
 import { fileTypeFromBuffer } from "file-type";
@@ -41,8 +42,8 @@ export default async function handler(
   // bookId is optional - if provided, we save to disk; if not, we return the image
   const shouldSave = bookId && typeof bookId === "string";
 
-  // Clean ISBN: remove dashes, spaces, keep X for ISBN-10 check digit
-  const cleanedIsbn = isbn.replace(/[^0-9X]/gi, "");
+  // Normalize: convert ISBN-10 → ISBN-13, restore leading zeros stripped by spreadsheets
+  const cleanedIsbn = normalizeToIsbn13(isbn) ?? isbn.replace(/[^0-9X]/gi, "");
 
   const API_KEY = process.env.GOOGLE_BOOKS_API_KEY ?? "";
 

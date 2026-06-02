@@ -3,6 +3,7 @@ import {
   fetchBookDataByIsbn,
   uploadCover,
 } from "@/components/batch-scan";
+import { normalizeToIsbn13 } from "@/lib/isbn-services/types";
 import Layout from "@/components/layout/Layout";
 import { t } from "@/lib/i18n";
 import { currentTime } from "@/lib/utils/dateutils";
@@ -62,7 +63,7 @@ function isbnLike(value: string): boolean {
 }
 
 function cleanIsbn(value: string): string {
-  return value.replace(/[-\s]/g, "");
+  return normalizeToIsbn13(value) ?? value.replace(/[^0-9Xx]/gi, "");
 }
 
 function scoreColumn(values: string[]): number {

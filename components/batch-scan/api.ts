@@ -1,4 +1,5 @@
 import { BookType } from "@/entities/BookType";
+import { normalizeToIsbn13 } from "@/lib/isbn-services/types";
 
 export const checkCoverExists = async (
   isbn: string,
@@ -17,7 +18,7 @@ export const checkCoverExists = async (
 export const fetchBookDataByIsbn = async (
   isbn: string,
 ): Promise<Partial<BookType> | null> => {
-  const cleanedIsbn = isbn.replace(/\D/g, "");
+  const cleanedIsbn = normalizeToIsbn13(isbn) ?? isbn.replace(/[^0-9X]/gi, "");
   if (!cleanedIsbn) return null;
   try {
     const response = await fetch(

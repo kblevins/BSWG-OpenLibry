@@ -12,6 +12,7 @@ import {
   cleanTitle,
   extractPageNumber,
   isValidBookData,
+  normalizeToIsbn13,
 } from "@/lib/isbn-services/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -40,12 +41,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { isbn } = req.query;
+  const { isbn: rawIsbn } = req.query;
 
-  if (!isbn || typeof isbn !== "string") {
+  if (!rawIsbn || typeof rawIsbn !== "string") {
     res.status(400).json({ error: "Missing ISBN parameter" });
     return;
   }
+
+  const isbn = normalizeToIsbn13(rawIsbn) ?? rawIsbn.replace(/[^0-9X]/gi, "");
 
   try {
     // Try each service in order until we get valid data
