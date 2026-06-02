@@ -39,12 +39,13 @@ echo "=== End diagnostic ==="
 echo "Running database migrations..."
 npx prisma migrate deploy
 
-# Ensure cover image storage directory exists (may be a Railway Volume mount)
+# Ensure cover image storage directory exists and is writable by the node user.
+# This runs as root so it can fix permissions on a freshly-mounted Railway Volume
+# (which is owned by root:root by default). The server drops back to node below.
 COVER_DIR="${COVERIMAGE_FILESTORAGE_PATH:-/app/images}"
-if [ ! -d "$COVER_DIR" ]; then
-  echo "Creating cover image directory at $COVER_DIR ..."
-  mkdir -p "$COVER_DIR"
-fi
+mkdir -p "$COVER_DIR"
+chown node:node "$COVER_DIR"
+echo "Cover image directory: $COVER_DIR ($(ls "$COVER_DIR" | wc -l) files)"
 
 # Ensure the custom templates directory exists
 if [ ! -d "$CUSTOM_DIR" ]; then
@@ -73,4 +74,5 @@ fi
 echo "Custom files in $CUSTOM_DIR:"
 ls -1R "$CUSTOM_DIR" 2>/dev/null || echo "(none)"
 
-exec "$@"
+# Drop from root to the node user before starting the server.
+exec su-exec node "$@"

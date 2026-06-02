@@ -1,6 +1,6 @@
 # ---- Base image versions ----
 FROM node:22-alpine AS base
-RUN apk add --no-cache libc6-compat openssl
+RUN apk add --no-cache libc6-compat openssl su-exec
 WORKDIR /app
 
 # ---- Dependencies (cacheable, prod only) ----
@@ -66,8 +66,8 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 
-USER node
 EXPOSE 3000
 
+# Entrypoint runs as root so it can fix volume permissions, then drops to node.
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]
