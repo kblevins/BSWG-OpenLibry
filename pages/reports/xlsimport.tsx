@@ -41,8 +41,8 @@ const normalizeBookData = (data: any[]): any[] => {
   const [headers, ...rows] = data;
   const normalizedRows = rows.map((row: any) => ({
     ...row,
-    Mediennummer: parseId(row["Mediennummer"]),
-    "Anzahl Verlängerungen": parseIntOrDefault(row["Anzahl Verlängerungen"], 0),
+    "Media Number": parseId(row["Media Number"]),
+    "Renewal Count": parseIntOrDefault(row["Renewal Count"], 0),
   }));
   return [headers, ...normalizedRows];
 };
@@ -52,7 +52,7 @@ const normalizeUserData = (data: any[]): any[] => {
   const [headers, ...rows] = data;
   const normalizedRows = rows.map((row: any) => ({
     ...row,
-    Nummer: parseId(row["Nummer"]),
+    ID: parseId(row["ID"]),
   }));
   return [headers, ...normalizedRows];
 };

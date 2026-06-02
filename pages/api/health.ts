@@ -100,17 +100,6 @@ function getSqliteDbPath(): string | null {
   return path.join(process.cwd(), relativePath);
 }
 
-// Format bytes to human readable
-function formatBytes(bytes: number): string {
-  const units = ["B", "KB", "MB", "GB"];
-  let i = 0;
-  while (bytes >= 1024 && i < units.length - 1) {
-    bytes /= 1024;
-    i++;
-  }
-  return `${bytes.toFixed(1)} ${units[i]}`;
-}
-
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse<HealthCheckResponse | { error: string }>,
@@ -246,7 +235,7 @@ export default async function handle(
         response.checks.data = {
           status: "warning",
           message:
-            "Keine Login-Benutzer vorhanden, aber Authentifizierung ist aktiviert",
+            "No login users found, but authentication is enabled",
           details: {
             books: bookCount,
             users: userCount,
@@ -259,7 +248,7 @@ export default async function handle(
       } else {
         response.checks.data = {
           status: "ok",
-          message: "Daten vorhanden",
+          message: "Data present",
           details: {
             books: bookCount,
             users: userCount,
@@ -419,9 +408,9 @@ export default async function handle(
     // Only report issues for required folders (not custom/labels, which are optional)
     if (folder.name !== "custom" && folder.name !== "labels") {
       if (!check.exists) {
-        folderIssues.push(`${folder.name}: nicht gefunden`);
+        folderIssues.push(`${folder.name}: not found`);
       } else if (!check.writable && folder.mustBeWritable) {
-        folderIssues.push(`${folder.name}: nicht beschreibbar`);
+        folderIssues.push(`${folder.name}: not writable`);
       }
     }
   }
@@ -445,7 +434,7 @@ export default async function handle(
   if (criticalFolderIssues.length > 0) {
     response.checks.folders = {
       status: "error",
-      message: `Probleme mit Verzeichnissen: ${criticalFolderIssues.join(", ")}`,
+      message: `Directory issues: ${criticalFolderIssues.join(", ")}`,
       details: folderResults,
     };
     response.status = "error";
@@ -453,8 +442,8 @@ export default async function handle(
     response.checks.folders = {
       status: "warning",
       message: !coverImagePath
-        ? "COVERIMAGE_FILESTORAGE_PATH nicht konfiguriert - Cover-Bilder werden nicht funktionieren"
-        : `Cover-Verzeichnis: ${coverIssues.join(", ")}`,
+        ? "COVERIMAGE_FILESTORAGE_PATH not configured — cover images will not work"
+        : `Cover directory: ${coverIssues.join(", ")}`,
       details: folderResults,
     };
     if (response.status === "ok") {
@@ -463,7 +452,7 @@ export default async function handle(
   } else {
     response.checks.folders = {
       status: "ok",
-      message: "Alle erforderlichen Verzeichnisse vorhanden",
+      message: "All required directories present",
       details: folderResults,
     };
   }
@@ -471,17 +460,17 @@ export default async function handle(
   // 4. Check optional files using customPath resolution (database/custom/ → public/)
   const optionalFiles = [
     {
-      name: "Mahnungs-Template (REMINDER_TEMPLATE_DOC)",
+      name: "Reminder template (REMINDER_TEMPLATE_DOC)",
       envVar: "REMINDER_TEMPLATE_DOC",
       defaultValue: "mahnung-template.docx",
     },
     {
-      name: "Benutzerausweis-Hintergrund (USERID_LABEL_IMAGE)",
+      name: "User ID label background (USERID_LABEL_IMAGE)",
       envVar: "USERID_LABEL_IMAGE",
       defaultValue: "ausweis_hintergrund.png",
     },
     {
-      name: "Antolin-Daten",
+      name: "Antolin data",
       envVar: null as string | null,
       fixedPath: "antolin/antolingesamt.csv",
       defaultValue: null as string | null,
@@ -521,14 +510,14 @@ export default async function handle(
 
     // Only warn if explicitly configured but missing in both locations
     if (isConfigured && pathInfo.activeSource === "missing" && file.envVar) {
-      fileWarnings.push(`${file.name}: konfiguriert aber nicht gefunden`);
+      fileWarnings.push(`${file.name}: configured but not found`);
     }
   }
 
   if (fileWarnings.length > 0) {
     response.checks.files = {
       status: "warning",
-      message: `Einige konfigurierte Dateien fehlen: ${fileWarnings.join(", ")}`,
+      message: `Some configured files are missing: ${fileWarnings.join(", ")}`,
       details: fileResults,
     };
     if (response.status === "ok") {
@@ -537,7 +526,7 @@ export default async function handle(
   } else {
     response.checks.files = {
       status: "ok",
-      message: "Alle konfigurierten Dateien vorhanden",
+      message: "All configured files present",
       details: fileResults,
     };
   }

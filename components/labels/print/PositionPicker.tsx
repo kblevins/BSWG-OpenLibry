@@ -80,7 +80,7 @@ export default function PositionPicker({
 
   return (
     <div className="space-y-3">
-      <Label>Startposition auf dem Bogen</Label>
+      <Label>Start position on sheet</Label>
       <RadioGroup
         value={mode}
         onValueChange={(v) => onModeChange(v as PickerMode)}
@@ -89,13 +89,13 @@ export default function PositionPicker({
         <div className="flex items-center gap-1.5">
           <RadioGroupItem value="start" id="mode-start" />
           <Label htmlFor="mode-start" className="font-normal text-sm">
-            Ab Position
+            From position
           </Label>
         </div>
         <div className="flex items-center gap-1.5">
           <RadioGroupItem value="pick" id="mode-pick" />
           <Label htmlFor="mode-pick" className="font-normal text-sm">
-            Einzelne Felder
+            Individual cells
           </Label>
         </div>
       </RadioGroup>
@@ -131,7 +131,7 @@ export default function PositionPicker({
                   }
                 `}
                 data-cy={`position-${row}-${col}`}
-                title={`Zeile ${row}, Spalte ${col}`}
+                title={`Row ${row}, Col ${col}`}
               >
                 {row},{col}
               </button>

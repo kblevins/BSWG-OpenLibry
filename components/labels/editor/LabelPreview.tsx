@@ -17,7 +17,7 @@ const SAMPLE_BOOK = {
   title: "Der kleine Prinz",
   author: "Antoine de Saint-Exupéry",
   subtitle: "A Story",
-  topics: "Abenteuer; Freundschaft; Philosophie; Kinderbuch",
+  topics: "Adventure; Friendship; Philosophy; Children",
 };
 
 interface LabelPreviewProps {
@@ -53,7 +53,7 @@ export default function LabelPreview({ template, sheetId }: LabelPreviewProps) {
       if (!response.ok) {
         const errBody = await response.json().catch(() => ({}));
         throw new Error(
-          errBody.error || "Vorschau konnte nicht geladen werden",
+          errBody.error || "Preview could not be loaded",
         );
       }
 
@@ -67,7 +67,7 @@ export default function LabelPreview({ template, sheetId }: LabelPreviewProps) {
       prevUrlRef.current = url;
       setPdfUrl(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Vorschau-Fehler");
+      setError(err instanceof Error ? err.message : "Preview error");
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ export default function LabelPreview({ template, sheetId }: LabelPreviewProps) {
           <iframe
             src={pdfUrl}
             className="w-full h-[400px]"
-            title="Etikettenvorschau"
+            title="Label preview"
             data-cy="label-preview-iframe"
           />
         ) : error ? (

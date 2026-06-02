@@ -257,12 +257,12 @@ export default function BatchScan() {
       if (bookData) {
         playSound("success");
         const coverInfo = coverResult.exists
-          ? ` (Cover von ${coverResult.source})`
+          ? ` (cover from ${coverResult.source})`
           : "";
-        toast.success(`"${bookData.title}" gefunden${coverInfo}`);
+        toast.success(`"${bookData.title}" found${coverInfo}`);
       } else {
         playSound("error");
-        toast.warning("Weiterhin nicht gefunden");
+        toast.warning("Still not found");
       }
     },
     [entries],
@@ -440,7 +440,7 @@ export default function BatchScan() {
           <Card className="mb-4">
             <CardContent className="pt-5">
               <h2 className="text-base font-semibold mb-3">
-                ISBN scannen oder eingeben
+                Scan or enter ISBN
               </h2>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
@@ -452,7 +452,7 @@ export default function BatchScan() {
                       onChange={(e) => setIsbnInput(e.target.value)}
                       onKeyDown={handleKeyDown}
                       autoFocus
-                      placeholder="ISBN hier scannen oder eingeben…"
+                      placeholder="Scan or enter ISBN here…"
                       data-cy="batch-scan-isbn-input"
                       className="pl-10 h-11"
                     />

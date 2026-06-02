@@ -65,9 +65,9 @@ export function useLabelPrint() {
 
       const blob = await generateLabelPdf(request);
       const dateStr = new Date().toISOString().slice(0, 10);
-      downloadBlob(blob, `buchetiketten-${dateStr}.pdf`);
+      downloadBlob(blob, `booklabels-${dateStr}.pdf`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unbekannter Fehler");
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setGenerating(false);
     }
