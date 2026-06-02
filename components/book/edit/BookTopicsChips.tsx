@@ -125,13 +125,13 @@ export default function BookTopicsChips({
                 size="sm"
                 className="h-6 px-2 text-xs text-muted-foreground border-dashed"
               >
-                + Schlagwort
+                + Keyword
               </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0 w-56" align="start">
               <Command>
                 <CommandInput
-                  placeholder="Schlagwort suchen…"
+                  placeholder="Search keywords…"
                   value={inputValue}
                   onValueChange={setInputValue}
                 />
@@ -150,7 +150,7 @@ export default function BookTopicsChips({
                       </button>
                     ) : (
                       <span className="text-muted-foreground px-3 py-2 text-sm">
-                        Keine Optionen
+                        No options
                       </span>
                     )}
                   </CommandEmpty>

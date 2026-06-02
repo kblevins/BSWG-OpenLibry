@@ -106,22 +106,15 @@ export default async function handler(
 
         const firstItem = data.items?.[0];
         const id = firstItem?.id;
-        // readingModes.image signals whether Google has a cover for this ISBN
-        const hasImage = firstItem?.volumeInfo?.readingModes?.image === true;
 
-        if (id && hasImage) {
+        // Attempt the cover URL whenever we have a book ID. readingModes.image
+        // only flags readable page previews — covers are often available even
+        // when that flag is false. The placeholder-size check below rejects any
+        // "no image" stub Google returns.
+        if (id) {
           return `https://books.google.com/books/content?id=${id}&printsec=frontcover&img=1&zoom=3&edge=curl`;
         }
 
-        businessLogger.info(
-          {
-            event: LogEvents.COVER_FETCH_ATTEMPT,
-            source: "Google",
-            reason:
-              "Google API reports no image available (readingModes.image is false)",
-          },
-          "Google returned no cover for this ISBN.",
-        );
         return null;
       },
       logEvent: LogEvents.COVER_FETCHED_GOOGLE,
