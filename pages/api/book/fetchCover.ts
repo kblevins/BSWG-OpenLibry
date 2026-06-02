@@ -112,18 +112,20 @@ export default async function handler(
 
         if (!id) return null;
 
-        // When imageLinks is present, use it (upgrading to https and requesting
-        // a larger size by swapping zoom=1 for zoom=3).
+        // When imageLinks is present, use it as-is (upgrading to https).
+        // Do NOT change the zoom level: zoom=3 triggers a greyscale PNG
+        // placeholder for books that don't have a hi-res scan, which passes
+        // every other validation check. zoom=1 (the thumbnail default) is
+        // always a real JPEG cover when the book has one.
         if (thumbnail) {
           return thumbnail
             .replace(/^http:/, "https:")
-            .replace(/zoom=\d/, "zoom=3")
             .replace(/&source=[^&]*/, "");
         }
 
-        // imageLinks is often absent from the list-search response even when
-        // a cover exists — construct the URL directly from the volume ID.
-        return `https://books.google.com/books/content?id=${id}&printsec=frontcover&img=1&zoom=3`;
+        // imageLinks is sometimes absent from the list-search response even
+        // when a cover exists — construct the URL from the volume ID instead.
+        return `https://books.google.com/books/content?id=${id}&printsec=frontcover&img=1&zoom=1`;
       },
       logEvent: LogEvents.COVER_FETCHED_GOOGLE,
     },
@@ -174,7 +176,15 @@ export default async function handler(
 
       const contentType = response.headers.get("content-type");
 
-      if (!contentType || !contentType.includes("image")) {
+      // Reject non-images AND PNG specifically: Google returns a greyscale
+      // "No preview available" PNG at zoom=3 for books without a hi-res scan.
+      // That placeholder passes the size and magic-bytes checks, so we must
+      // catch it here. Real covers from every source we use are JPEG.
+      if (
+        !contentType ||
+        !contentType.includes("image") ||
+        contentType.includes("image/png")
+      ) {
         businessLogger.debug(
           {
             event: LogEvents.COVER_FETCH_ATTEMPT,
@@ -182,9 +192,9 @@ export default async function handler(
             isbn: cleanedIsbn,
             bookId: bookId || null,
             contentType,
-            reason: "Response is not an image",
+            reason: "Response is not a usable image (missing, non-image, or PNG placeholder)",
           },
-          `${source.name} did not return an image`,
+          `${source.name} did not return a usable image`,
         );
         continue;
       }
