@@ -1,11 +1,13 @@
 import BookSearchBar from "@/components/book/BookSearchBar";
-import BookSummaryCard from "@/components/book/BookSummaryCard";
+import BookSummaryCard, { RequestState } from "@/components/book/BookSummaryCard";
 import Layout from "@/components/layout/Layout";
 import { BookType } from "@/entities/BookType";
 import { PublicBookType } from "@/entities/PublicBookType";
 import { useBookSearch } from "@/hooks/useBookSearch";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { useSession } from "next-auth/react";
 import { memo, useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 import useSWR from "swr";
 
 // =============================================================================
@@ -62,12 +64,16 @@ interface CatalogCardGridProps {
   renderedBooks: BookType[];
   pageIndex: number;
   onLoadMore: () => void;
+  onRequest: (bookId: number) => void;
+  requestStates: Record<number, RequestState>;
 }
 
 const CatalogCardGrid = memo(function CatalogCardGrid({
   renderedBooks,
   pageIndex,
   onLoadMore,
+  onRequest,
+  requestStates,
 }: CatalogCardGridProps) {
   const noop = useCallback(() => {}, []);
 
@@ -83,6 +89,8 @@ const CatalogCardGrid = memo(function CatalogCardGrid({
             book={b}
             returnBook={noop}
             showDetailsControl={false}
+            onRequest={onRequest}
+            requestState={requestStates[b.id!] ?? (b.rentalStatus === "available" ? "available" : "unavailable")}
           />
         ))}
       </div>
@@ -109,6 +117,11 @@ export default function Catalog({
   numberBooksToShow,
   maxBooks,
 }: CatalogPropsType) {
+  const { data: session, status: sessionStatus } = useSession();
+  const userRole = (session?.user as { role?: string } | undefined)?.role;
+  const isLoggedIn = sessionStatus === "authenticated";
+  const isAdmin = userRole === "admin";
+
   const { data: freshData } = useSWR("/api/public/books", fetcher, {
     fallbackData: initialBooks,
     refreshInterval: 0,
@@ -132,6 +145,7 @@ export default function Catalog({
   const books = useMemo(() => rawBooks.map(toCardBook), [rawBooks]);
 
   const [pageIndex, setPageIndex] = useState(numberBooksToShow);
+  const [requestStates, setRequestStates] = useState<Record<number, RequestState>>({});
 
   const { renderedBooks, bookSearchInput, handleInputChange, resultCount } =
     useBookSearch(books, {
@@ -153,6 +167,73 @@ export default function Catalog({
 
   const noop = useCallback(() => {}, []);
 
+  // Determine per-book request state based on session status
+  const resolvedRequestStates = useMemo<Record<number, RequestState>>(() => {
+    if (sessionStatus === "loading") return {};
+    if (!isLoggedIn) {
+      // Show "sign in" prompt on available books for anonymous visitors
+      const states: Record<number, RequestState> = {};
+      for (const b of books) {
+        if (b.id == null) continue;
+        states[b.id] = b.rentalStatus === "available" ? "login" : "unavailable";
+      }
+      return { ...states, ...requestStates };
+    }
+    if (isAdmin) {
+      // Admins don't see request buttons — no onRequest prop needed
+      return requestStates;
+    }
+    // Logged-in non-admin: available books show "available", rented show "unavailable"
+    const states: Record<number, RequestState> = {};
+    for (const b of books) {
+      if (b.id == null) continue;
+      if (!(b.id in requestStates)) {
+        states[b.id] = b.rentalStatus === "available" ? "available" : "unavailable";
+      }
+    }
+    return { ...states, ...requestStates };
+  }, [books, isLoggedIn, isAdmin, sessionStatus, requestStates]);
+
+  const handleRequest = useCallback(
+    async (bookId: number) => {
+      setRequestStates((prev) => ({ ...prev, [bookId]: "loading" }));
+      try {
+        const res = await fetch("/api/requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookId }),
+        });
+        if (res.status === 401) {
+          setRequestStates((prev) => ({ ...prev, [bookId]: "login" }));
+          return;
+        }
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          toast.error(body.message ?? "Could not submit request");
+          setRequestStates((prev) => {
+            const next = { ...prev };
+            delete next[bookId];
+            return next;
+          });
+          return;
+        }
+        setRequestStates((prev) => ({ ...prev, [bookId]: "requested" }));
+        toast.success("Request submitted — the librarian will be in touch!");
+      } catch {
+        toast.error("Network error — please try again");
+        setRequestStates((prev) => {
+          const next = { ...prev };
+          delete next[bookId];
+          return next;
+        });
+      }
+    },
+    [],
+  );
+
+  // Admins see the catalog without request buttons
+  const requestHandler = isAdmin ? noop : handleRequest;
+
   return (
     <Layout publicView={true}>
       <BookSearchBar
@@ -169,6 +250,8 @@ export default function Catalog({
         renderedBooks={renderedBooks}
         pageIndex={pageIndex}
         onLoadMore={handleLoadMore}
+        onRequest={requestHandler}
+        requestStates={resolvedRequestStates}
       />
     </Layout>
   );

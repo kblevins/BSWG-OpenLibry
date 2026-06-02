@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   ArrowRight,
   Book,
+  BookMarked,
   BookPlus,
   CalendarClock,
   CheckCircle,
@@ -298,6 +299,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [backupLoading, setBackupLoading] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<number | null>(null);
 
   const fetchHealth = async () => {
     setLoading(true);
@@ -319,6 +321,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchHealth();
+    fetch("/api/requests/count")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => d && setPendingRequests(d.count))
+      .catch(() => {});
   }, []);
 
   const handleBackup = async () => {
@@ -403,6 +409,20 @@ export default function AdminPage() {
             onClick={() => router.push("/admin/loginusers")}
             colorVar="var(--warning)"
           />
+          <div className="relative">
+            <ActionCard
+              title="Checkout Requests"
+              description="Review member checkout requests"
+              icon={BookMarked}
+              onClick={() => router.push("/admin/requests")}
+              colorVar="var(--info)"
+            />
+            {pendingRequests !== null && pendingRequests > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full bg-warning text-white text-xs font-bold shadow">
+                {pendingRequests}
+              </span>
+            )}
+          </div>
         </div>
 
         <div

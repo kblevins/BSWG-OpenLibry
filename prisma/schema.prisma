@@ -34,6 +34,18 @@ model LoginUser {
   active    Boolean  @default(true)
 }
 
+model CheckoutRequest {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  bookId         Int
+  book           Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  requesterEmail String
+  requesterName  String?
+  status         String   @default("pending")
+  note           String?
+}
+
 model Audit {
   createdAt    DateTime @default(now())
   id           Int      @id @default(autoincrement())
@@ -76,6 +88,7 @@ model Book {
   price                   String?
   externalLinks           String?
 
-  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId Int?
+  user             User?             @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId           Int?
+  checkoutRequests CheckoutRequest[]
 }

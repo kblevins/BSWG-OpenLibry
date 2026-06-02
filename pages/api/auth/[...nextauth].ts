@@ -1,9 +1,9 @@
 import { getLoginUserByEmail } from "@/entities/loginuser";
 import { prisma } from "@/entities/db";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
     maxAge: process.env.LOGIN_SESSION_TIMEOUT
@@ -22,9 +22,24 @@ export default NextAuth({
       const allowed = await getLoginUserByEmail(prisma, user.email);
       return allowed !== null;
     },
+    async jwt({ token, user: googleUser }) {
+      if (googleUser?.email) {
+        const dbUser = await getLoginUserByEmail(prisma, googleUser.email);
+        token.role = dbUser?.role ?? "user";
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as { role?: string }).role = token.role as string;
+      }
+      return session;
+    },
   },
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
   },
-});
+};
+
+export default NextAuth(authOptions);

@@ -1,4 +1,4 @@
-import { ArrowLeftFromLine, Pencil } from "lucide-react";
+import { ArrowLeftFromLine, BookMarked, LogIn, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -40,11 +40,15 @@ const parseTopics = (topics: string | undefined | null): string[] => {
 // Main Component
 // =============================================================================
 
+export type RequestState = "available" | "loading" | "requested" | "unavailable" | "login";
+
 interface BookSummaryCardProps {
   book: BookType;
   returnBook: React.MouseEventHandler<HTMLButtonElement>;
   showDetailsControl?: boolean;
   onTopicClick?: (topic: string) => void;
+  onRequest?: (bookId: number) => void;
+  requestState?: RequestState;
 }
 
 function BookSummaryCard({
@@ -52,6 +56,8 @@ function BookSummaryCard({
   returnBook,
   showDetailsControl = true,
   onTopicClick,
+  onRequest,
+  requestState,
 }: BookSummaryCardProps) {
   const [src, setSrc] = useState(`/api/images/${book.id}`);
   const [modalOpen, setModalOpen] = useState(false);
@@ -262,6 +268,66 @@ function BookSummaryCard({
                   Details anzeigen &amp; bearbeiten
                 </TooltipContent>
               </Tooltip>
+            </div>
+          )}
+
+          {/* Request Checkout — shown on public catalog when onRequest is provided */}
+          {!showDetailsControl && onRequest && (
+            <div className="mt-1.5">
+              {requestState === "login" ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a
+                      href="/auth/login"
+                      className="flex items-center justify-center gap-1
+                                 h-8 px-3 rounded-md w-full
+                                 bg-white/20 text-white/80 backdrop-blur-sm
+                                 text-xs font-medium
+                                 hover:bg-white/30 hover:scale-105
+                                 transition-all duration-200"
+                    >
+                      <LogIn className="h-3.5 w-3.5" />
+                      <span>Sign in to request</span>
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>Sign in to request this book</TooltipContent>
+                </Tooltip>
+              ) : requestState === "requested" ? (
+                <div className="flex items-center justify-center gap-1 h-8 px-3 rounded-md bg-success/30 text-white text-xs font-medium">
+                  <BookMarked className="h-3.5 w-3.5" />
+                  <span>Requested</span>
+                </div>
+              ) : requestState === "unavailable" ? (
+                <div className="flex items-center justify-center gap-1 h-8 px-3 rounded-md bg-white/10 text-white/50 text-xs font-medium cursor-not-allowed">
+                  <BookMarked className="h-3.5 w-3.5" />
+                  <span>Unavailable</span>
+                </div>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRequest(book.id!);
+                      }}
+                      disabled={requestState === "loading"}
+                      aria-label="Request checkout"
+                      className="flex items-center justify-center gap-1
+                                 h-8 px-3 rounded-md w-full
+                                 bg-primary/80 text-white backdrop-blur-sm
+                                 text-xs font-medium
+                                 hover:bg-primary hover:scale-105
+                                 disabled:opacity-60 disabled:cursor-not-allowed
+                                 focus-visible:outline-2 focus-visible:outline-primary-light focus-visible:outline-offset-2
+                                 transition-all duration-200"
+                    >
+                      <BookMarked className="h-3.5 w-3.5" />
+                      <span>{requestState === "loading" ? "Requesting…" : "Request checkout"}</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Request this book for checkout</TooltipContent>
+                </Tooltip>
+              )}
             </div>
           )}
         </div>

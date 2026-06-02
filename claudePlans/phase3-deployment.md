@@ -223,6 +223,10 @@ RENTAL_DURATION_DAYS=<from .env.local>
 MAX_EXTENSIONS=<from .env.local>
 NUMBER_BOOKS_OVERVIEW=<from .env.local>
 NUMBER_BOOKS_MAX=<from .env.local>
+
+RESEND_API_KEY=<from resend.com dashboard>
+RESEND_FROM_EMAIL=noreply@weavebrazos.org
+REMINDER_RESPONSIBLE_EMAIL=kali.blevins@weavebrazos.org
 ```
 
 > `DATABASE_URL` is set automatically by Railway from the PostgreSQL service — do not
@@ -230,6 +234,12 @@ NUMBER_BOOKS_MAX=<from .env.local>
 
 > `AUTH_ENABLED` and `SECURITY_HEADERS` must be changed from their local dev values
 > (`false`/`insecure`) to `true`/`secure` for production.
+
+> `RESEND_API_KEY` and `RESEND_FROM_EMAIL` enable email notifications when a member
+> submits a checkout request. The app functions without them (requests still queue in
+> the database), but no notification email will be sent until both are set.
+> `REMINDER_RESPONSIBLE_EMAIL` is the destination address — already set to
+> `kali.blevins@weavebrazos.org`.
 
 ---
 
@@ -292,6 +302,49 @@ A management UI was built at `/admin/loginusers` (linked from the admin dashboar
 lets you add Gmail addresses, toggle active/inactive, change roles, and delete entries
 without touching the database directly.
 
+### Self-service catalog requests
+
+Members can browse `/catalog` without logging in and request available books after
+signing in with their Google account (role = `user`). Admins do not see request buttons
+— they process checkouts directly via `/rental`.
+
+**How it works:**
+
+1. A member clicks **Request checkout** on a catalog card → a `CheckoutRequest` row is
+   created in the database and an email notification is sent to `REMINDER_RESPONSIBLE_EMAIL`
+   via Resend.
+2. The librarian sees a pending-count badge on the admin dashboard → clicks through to
+   `/admin/requests` → approves or denies the request.
+3. Approved requests are handled physically — the librarian locates the book and
+   processes the actual checkout through the existing `/rental` desk.
+
+**Files added:**
+
+| File | Purpose |
+|------|---------|
+| `prisma/schema.prisma` | `CheckoutRequest` model |
+| `prisma/migrations/…_add_checkout_requests/` | Migration applied to production on next deploy |
+| `entities/checkoutrequest.ts` | CRUD helpers |
+| `lib/email/sendRequestEmail.ts` | Resend notification |
+| `pages/api/requests/index.ts` | POST (member) + GET (admin) |
+| `pages/api/requests/[id].ts` | PATCH status + DELETE (admin) |
+| `pages/api/requests/count.ts` | Pending count for admin badge |
+| `pages/admin/requests.tsx` | Librarian queue page |
+| `types/next-auth.d.ts` | Extends Session type with `role` |
+
+**Role enforcement (partial):**
+
+The `jwt` and `session` NextAuth callbacks now read `role` from `LoginUser` and
+surface it in `session.user.role`. The requests API uses this to enforce access.
+Full admin-page guarding (redirecting `role = user` away from `/admin`, `/rental`,
+`/book`, etc.) is still a future task — see below.
+
+**Resend sender setup:**
+
+DNS records for `weavebrazos.org` have been added to Resend for domain verification.
+Once propagated, `RESEND_FROM_EMAIL=noreply@weavebrazos.org` becomes a valid sender
+without requiring a real mailbox.
+
 ### Locale baked into Docker build
 
 `NEXT_PUBLIC_OPENLIBRY_LOCALE` is a Next.js build-time variable — it is inlined into the
@@ -315,10 +368,16 @@ If a future deployment needs a different locale, set the Railway **Build Variabl
 - [x] Google SSO open to any Gmail account
 - [x] Email allowlist enforced via `LoginUser` table and `signIn` callback
 - [x] `/admin/loginusers` page available for managing allowed accounts
-- [ ] Your Gmail address added to `LoginUser` before deploying the `signIn` callback
+- [x] `role` field surfaced in NextAuth session (`jwt` + `session` callbacks)
+- [x] Self-service catalog request feature deployed (`/catalog`, `/admin/requests`)
+- [x] Resend DNS records added for `weavebrazos.org` (awaiting propagation)
+- [ ] Your Gmail address added to `LoginUser` (role = `admin`) before first login
+- [ ] `RESEND_API_KEY` set in Railway variables
+- [ ] `RESEND_FROM_EMAIL=noreply@weavebrazos.org` set in Railway variables (after DNS propagates)
+- [ ] Test a checkout request from a non-admin account end-to-end
 - [ ] Team members can log in successfully
-- [ ] Full book catalog is visible and searchable
-- [ ] Staff can check items in and out
+- [ ] Full book catalog is visible and searchable at `/catalog` without login
+- [ ] Staff can check items in and out via `/rental`
 - [ ] HTTPS is active (automatic on Railway)
 - [ ] Automated database backups are enabled (Railway default — verify in dashboard)
 - [ ] `AUTH_ENABLED=true` is confirmed in Railway variables
@@ -328,62 +387,49 @@ If a future deployment needs a different locale, set the Railway **Build Variabl
 
 ## Future tasks
 
-### Role-based access control
+### Role-based access control (partially implemented)
 
-The `LoginUser` table has a `role` field (`admin` or `user`) that is stored and visible
-in the `/admin/loginusers` UI but is **not yet enforced**. All authenticated users
-currently have the same access level.
+Steps 1 and 2 below are **done**. Steps 3 and 4 are still pending — all authenticated
+users can currently reach `/admin`, `/rental`, `/book`, and `/user` regardless of role.
 
-To enforce roles:
+~~1. Expose the role in the NextAuth JWT~~ ✅ Done — `jwt` and `session` callbacks in
+`pages/api/auth/[...nextauth].ts` read `role` from `LoginUser` and surface it as
+`session.user.role`.
 
-1. Expose the role in the NextAuth JWT so it is available in the session:
+~~2. Extend the NextAuth session type in `types/next-auth.d.ts`~~ ✅ Done.
 
-```ts
-// pages/api/auth/[...nextauth].ts
-callbacks: {
-  async jwt({ token, user: googleUser }) {
-    if (googleUser?.email) {
-      const dbUser = await getLoginUserByEmail(prisma, googleUser.email);
-      token.role = dbUser?.role ?? "user";
-    }
-    return token;
-  },
-  async session({ session, token }) {
-    if (session.user) session.user.role = token.role as string;
-    return session;
-  },
-  async signIn({ user }) { /* existing check */ },
-},
-```
-
-2. Extend the NextAuth session type in `types/next-auth.d.ts`:
+3. **Guard admin pages in `getServerSideProps`** (still needed):
 
 ```ts
-declare module "next-auth" {
-  interface Session {
-    user: { role?: string } & DefaultSession["user"];
-  }
-}
-```
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
-3. Guard admin pages in `getServerSideProps`:
-
-```ts
+// In getServerSideProps of each admin/staff page:
 const session = await getServerSession(context.req, context.res, authOptions);
 if (session?.user?.role !== "admin") {
-  return { redirect: { destination: "/", permanent: false } };
+  return { redirect: { destination: "/catalog", permanent: false } };
 }
 ```
 
-4. Guard admin API routes with the same session check.
+Pages that need this guard: `/admin/*`, `/rental`, `/book`, `/user`, `/reports`.
+
+4. **Guard admin API routes** (still needed) — add the same session check to any
+   API route a `role = user` member should not reach. The `/api/requests/*` routes
+   already enforce this pattern and can serve as a reference.
 
 ---
 
 ## Ongoing maintenance notes
 
 - **Adding users**: navigate to `/admin/loginusers` to add or disable Gmail addresses.
-  The `role` field defaults to `user`; set it to `admin` for staff who need admin access
-  once role enforcement is implemented.
+  Set `role` to `admin` for staff (librarians) and `user` for members who only need
+  catalog access and self-service checkout requests.
+- **Checkout requests**: navigate to `/admin/requests` to approve or deny pending
+  member requests. Approving a request is an acknowledgement only — the librarian
+  still processes the physical handoff through `/rental`.
+- **Email notifications**: checkout request emails are sent to `REMINDER_RESPONSIBLE_EMAIL`
+  via Resend. If no email arrives, check that `RESEND_API_KEY` and `RESEND_FROM_EMAIL`
+  are set in Railway and that the Resend domain for `weavebrazos.org` is verified.
 - **Database backups**: Railway backs up PostgreSQL daily by default. Verify the retention
   window in the PostgreSQL service settings and test a restore before going live.
 - **Local dev**: Keep your local PostgreSQL Docker container running when developing.
