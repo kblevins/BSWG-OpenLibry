@@ -106,13 +106,15 @@ export default async function handler(
 
         const firstItem = data.items?.[0];
         const id = firstItem?.id;
+        const thumbnail: string | undefined =
+          firstItem?.volumeInfo?.imageLinks?.thumbnail ??
+          firstItem?.volumeInfo?.imageLinks?.smallThumbnail;
 
-        // Attempt the cover URL whenever we have a book ID. readingModes.image
-        // only flags readable page previews — covers are often available even
-        // when that flag is false. The placeholder-size check below rejects any
-        // "no image" stub Google returns.
-        if (id) {
-          return `https://books.google.com/books/content?id=${id}&printsec=frontcover&img=1&zoom=3&edge=curl`;
+        // imageLinks is only present in the API response when Google has a real
+        // cover scan. Use it as the existence gate, then request a larger size
+        // by swapping zoom=1 (thumbnail) for zoom=3 for better resolution.
+        if (id && thumbnail) {
+          return thumbnail.replace(/zoom=\d/, "zoom=3").replace(/&source=[^&]*/, "");
         }
 
         return null;
@@ -351,7 +353,7 @@ export default async function handler(
   );
 
   return res.status(404).json({
-    error: "Kein Cover gefunden bei DNB, OpenLibrary oder Google",
+    error: "No cover found at DNB, OpenLibrary, or Google",
     success: false,
   });
 }
