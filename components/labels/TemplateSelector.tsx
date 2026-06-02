@@ -32,7 +32,7 @@ export default function TemplateSelector({
   return (
     <div className={hideLabel ? "" : "space-y-1.5"}>
       {!hideLabel && (
-        <Label htmlFor="template-selector">Etikettenvorlage</Label>
+        <Label htmlFor="template-selector">Label Template</Label>
       )}
       <Select value={value} onValueChange={onChange} disabled={loading}>
         <SelectTrigger id="template-selector" data-cy="template-selector">

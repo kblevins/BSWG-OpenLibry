@@ -28,7 +28,7 @@ export default function SheetSelector({
 }: SheetSelectorProps) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor="sheet-selector">Etikettenbogen</Label>
+      <Label htmlFor="sheet-selector">Label Sheet</Label>
       <Select value={value} onValueChange={onChange} disabled={loading}>
         <SelectTrigger id="sheet-selector" data-cy="sheet-selector">
           <SelectValue placeholder="Select sheet…" />
@@ -37,7 +37,7 @@ export default function SheetSelector({
           {sheets
             .filter((sheet) => sheet.label && sheet.grid)
             .map((sheet) => {
-              const label = `${sheet.name} — ${sheet.label.width}×${sheet.label.height}mm, ${sheet.labelsPerSheet}/Blatt`;
+              const label = `${sheet.name} — ${sheet.label.width}×${sheet.label.height}mm, ${sheet.labelsPerSheet}/sheet`;
               return (
                 <SelectItem key={sheet.id} value={sheet.id}>
                   {label}

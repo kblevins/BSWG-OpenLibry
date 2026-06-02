@@ -1,5 +1,5 @@
 import { t } from "@/lib/i18n";
-import { Download, Upload } from "lucide-react";
+import { Download } from "lucide-react";
 
 interface ExcelCardProps {
   dataCy?: string;
@@ -28,14 +28,6 @@ export default function ExcelCard({ dataCy = "excel-card" }: ExcelCardProps) {
         >
           <Download size={15} />
           {t("excelCard.exportButton")}
-        </a>
-        <a
-          href="reports/xlsimport"
-          data-cy="excel-import-button"
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-        >
-          <Upload size={15} />
-          {t("excelCard.importButton")}
         </a>
       </div>
     </div>
