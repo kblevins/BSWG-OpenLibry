@@ -77,7 +77,7 @@ export default function BookFilterForm({
         <div className="flex items-center gap-3">
           <RadioGroupItem value="latest" id="filter-latest" />
           <Label htmlFor="filter-latest" className="font-normal">
-            Neueste
+            Latest
           </Label>
           <Input
             type="number"
@@ -93,7 +93,7 @@ export default function BookFilterForm({
             disabled={filter.type !== "latest"}
             data-cy="filter-latest-count"
           />
-          <span className="text-sm text-muted-foreground">Bücher</span>
+          <span className="text-sm text-muted-foreground">books</span>
         </div>
 
         {/* By topic — multi-select */}
@@ -102,7 +102,7 @@ export default function BookFilterForm({
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-3">
               <Label htmlFor="filter-topic" className="font-normal shrink-0">
-                Schlagwort
+                Topic
               </Label>
               <Popover open={topicOpen} onOpenChange={setTopicOpen}>
                 <PopoverTrigger asChild>
@@ -117,16 +117,16 @@ export default function BookFilterForm({
                     <span className="truncate text-muted-foreground">
                       {selectedTopics.length === 0
                         ? "Select topic…"
-                        : `${selectedTopics.length} ausgewählt`}
+                        : `${selectedTopics.length} selected`}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0 w-64" align="start">
                   <Command>
-                    <CommandInput placeholder="Thema suchen…" />
+                    <CommandInput placeholder="Search topics…" />
                     <CommandList>
-                      <CommandEmpty>Kein Thema gefunden.</CommandEmpty>
+                      <CommandEmpty>No topic found.</CommandEmpty>
                       <CommandGroup>
                         {topics.map((topic) => {
                           const isSelected = selectedTopics.includes(topic);
@@ -172,7 +172,7 @@ export default function BookFilterForm({
                       type="button"
                       onClick={() => removeTopic(topic)}
                       className="ml-0.5 rounded-full hover:bg-muted p-0.5"
-                      aria-label={`${topic} entfernen`}
+                      aria-label={`Remove ${topic}`}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -187,7 +187,7 @@ export default function BookFilterForm({
         <div className="flex items-center gap-3">
           <RadioGroupItem value="all" id="filter-all" />
           <Label htmlFor="filter-all" className="font-normal">
-            Alle Bücher
+            All Books
           </Label>
         </div>
 
@@ -195,12 +195,12 @@ export default function BookFilterForm({
         <div className="flex items-center gap-3">
           <RadioGroupItem value="ids" id="filter-ids" />
           <Label htmlFor="filter-ids" className="font-normal">
-            Buch-IDs
+            Book IDs
           </Label>
           <Input
             type="text"
             className="flex-1 h-8"
-            placeholder="z.B. 1, 5, 12, 42"
+            placeholder="e.g. 1, 5, 12, 42"
             value={filter.type === "ids" ? (filter.ids ?? []).join(", ") : ""}
             onChange={(e) => {
               const ids = e.target.value

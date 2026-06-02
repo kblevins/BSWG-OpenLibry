@@ -96,17 +96,17 @@ export default function LabelEditorPage() {
             {/* Template settings */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Einstellungen</CardTitle>
+                <CardTitle className="text-base">Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Template name */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="template-name">Vorlagenname</Label>
+                  <Label htmlFor="template-name">Template Name</Label>
                   <Input
                     id="template-name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="z.B. Standard Buchetikett"
+                    placeholder="e.g. Standard Book Label"
                     data-cy="template-name-input"
                   />
                 </div>
@@ -143,12 +143,12 @@ export default function LabelEditorPage() {
                 {saving ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Wird gespeichert…
+                    Saving…
                   </>
                 ) : (
                   <>
                     <Save className="h-4 w-4 mr-2" />
-                    Vorlage speichern
+                    Save Template
                   </>
                 )}
               </Button>
@@ -181,7 +181,7 @@ export default function LabelEditorPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Vorschau</CardTitle>
+                <CardTitle className="text-base">Preview</CardTitle>
               </CardHeader>
               <CardContent>
                 <LabelPreview template={currentTemplate} sheetId={sheetId} />

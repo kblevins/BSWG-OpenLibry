@@ -45,23 +45,23 @@ describe("Excel Export", () => {
       `${downloadsFolder}/${expectedFilename}`,
     ).then((result: any) => {
       expect(result.worksheetCount).to.eq(2);
-      expect(result.worksheetNames).to.include("Bücherliste");
-      expect(result.worksheetNames).to.include("Userliste");
+      expect(result.worksheetNames).to.include("Book List");
+      expect(result.worksheetNames).to.include("User List");
     });
 
     cy.task(
       "validateBookColumns",
       `${downloadsFolder}/${expectedFilename}`,
     ).then((columns: any) => {
-      expect(columns).to.include("Mediennummer");
-      expect(columns).to.include("Titel");
-      expect(columns).to.include("Autor");
-      expect(columns).to.include("Ausleihstatus");
+      expect(columns).to.include("Media Number");
+      expect(columns).to.include("Title");
+      expect(columns).to.include("Author");
+      expect(columns).to.include("Rental Status");
       expect(columns).to.include("ISBN");
-      expect(columns).to.include("Erzeugt am");
-      expect(columns).to.include("Update am");
-      expect(columns).to.include("Ausgeliehen am");
-      expect(columns).to.include("Rückgabe am");
+      expect(columns).to.include("Created At");
+      expect(columns).to.include("Updated At");
+      expect(columns).to.include("Rented Date");
+      expect(columns).to.include("Due Date");
       expect(columns.length).to.eq(29);
     });
 
@@ -69,15 +69,15 @@ describe("Excel Export", () => {
       "validateUserColumns",
       `${downloadsFolder}/${expectedFilename}`,
     ).then((columns: any) => {
-      expect(columns).to.include("Nummer");
-      expect(columns).to.include("Vorname");
-      expect(columns).to.include("Nachname");
-      expect(columns).to.include("Klasse");
-      expect(columns).to.include("Freigeschaltet");
-      expect(columns).to.include("Erzeugt am");
-      expect(columns).to.include("Update am");
-      expect(columns).to.include("Lehrkraft");
-      expect(columns).to.include("eMail");
+      expect(columns).to.include("ID");
+      expect(columns).to.include("First Name");
+      expect(columns).to.include("Last Name");
+      expect(columns).to.include("School Grade");
+      expect(columns).to.include("Active");
+      expect(columns).to.include("Created At");
+      expect(columns).to.include("Updated At");
+      expect(columns).to.include("Teacher");
+      expect(columns).to.include("Email");
       expect(columns.length).to.eq(9);
     });
 

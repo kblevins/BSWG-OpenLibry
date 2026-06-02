@@ -49,7 +49,7 @@ export default async function handle(
         // across all locales. Cypress fixtures + the import path read them
         // by name. See xlsColumnsMapping.ts for column header pinning.
         const booksheet = workbook.addWorksheet("Book List");
-        const usersheet = workbook.addWorksheet("Userliste");
+        const usersheet = workbook.addWorksheet("User List");
 
         booksheet.columns = xlsbookcolumns;
         books.forEach((b: BookType) => {
@@ -213,12 +213,12 @@ export default async function handle(
             transaction.push(
               prisma.user.create({
                 data: {
-                  id: u["Nummer"],
-                  lastName: u["Nachname"],
-                  firstName: u["Vorname"],
-                  schoolGrade: u["Klasse"],
-                  schoolTeacherName: u["Lehrkraft"],
-                  active: u["Freigeschaltet"],
+                  id: u["ID"],
+                  lastName: u["Last Name"],
+                  firstName: u["First Name"],
+                  schoolGrade: u["School Grade"],
+                  schoolTeacherName: u["Teacher"],
+                  active: u["Active"],
                 },
               })
             );
@@ -237,33 +237,33 @@ export default async function handle(
             transaction.push(
               prisma.book.create({
                 data: {
-                  id: b["Mediennummer"],
-                  rentalStatus: b["Ausleihstatus"],
-                  rentedDate: convertDayToISOString(b["Ausgeliehen am"]),
-                  dueDate: convertDayToISOString(b["Rückgabe am"]),
-                  renewalCount: b["Anzahl Verlängerungen"],
-                  title: b["Titel"],
-                  subtitle: b["Untertitel"],
-                  author: b["Autor"],
-                  topics: b["Schlagworte"] || "",
-                  imageLink: b["Bild"],
+                  id: b["Media Number"],
+                  rentalStatus: b["Rental Status"],
+                  rentedDate: convertDayToISOString(b["Rented Date"]),
+                  dueDate: convertDayToISOString(b["Due Date"]),
+                  renewalCount: b["Renewal Count"],
+                  title: b["Title"],
+                  subtitle: b["Subtitle"],
+                  author: b["Author"],
+                  topics: b["Topics"] || "",
+                  imageLink: b["Image Link"],
                   isbn: b["ISBN"]?.toString() || "",
                   editionDescription: b["Edition"],
-                  publisherLocation: b["Verlagsort"],
-                  pages: parseInt(b["Seiten"]) || 0,
-                  summary: b["Zusammenfassung"],
-                  minPlayers: b["Min Spieler"],
-                  publisherName: b["Verlag"],
-                  otherPhysicalAttributes: b["Merkmale"],
-                  supplierComment: b["Beschaffung"],
-                  publisherDate: b["Publikationsdatum"],
-                  physicalSize: b["Abmessungen"],
-                  minAge: b["Min Alter"],
-                  maxAge: b["Max Alter"],
-                  additionalMaterial: b["Material"],
-                  price: b["Preis"],
+                  publisherLocation: b["Publisher Location"],
+                  pages: parseInt(b["Pages"]) || 0,
+                  summary: b["Summary"],
+                  minPlayers: b["Min Players"],
+                  publisherName: b["Publisher"],
+                  otherPhysicalAttributes: b["Attributes"],
+                  supplierComment: b["Supplier Comment"],
+                  publisherDate: b["Publication Date"],
+                  physicalSize: b["Physical Size"],
+                  minAge: b["Min Age"],
+                  maxAge: b["Max Age"],
+                  additionalMaterial: b["Additional Material"],
+                  price: b["Price"],
                   externalLinks: b["Links"],
-                  userId: b["Ausgeliehen von"],
+                  userId: b["Rented By"],
                 },
               })
             );

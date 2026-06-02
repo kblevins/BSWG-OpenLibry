@@ -105,7 +105,7 @@ export default function LabelPrintPage({ topics }: LabelPrintPageProps) {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">
-                  Position auf dem Bogen
+                  Position on Sheet
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -139,12 +139,12 @@ export default function LabelPrintPage({ topics }: LabelPrintPageProps) {
               {generating ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  PDF wird erstellt…
+                  Creating PDF…
                 </>
               ) : (
                 <>
                   <Download className="h-4 w-4 mr-2" />
-                  PDF herunterladen
+                  Download PDF
                 </>
               )}
             </Button>
