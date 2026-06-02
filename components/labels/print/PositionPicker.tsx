@@ -8,7 +8,6 @@
  * The grid dimensions come from the selected SheetConfig.
  */
 
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { LabelPosition } from "@/lib/labels/types";
@@ -144,12 +143,12 @@ export default function PositionPicker({
       {/* Status text */}
       <p className="text-xs text-muted-foreground">
         {mode === "start" && startPosition
-          ? `Druck ab Zeile ${startPosition.row}, Spalte ${startPosition.col} (${
+          ? `Printing from row ${startPosition.row}, column ${startPosition.col} (${
               (startPosition.row - 1) * columns + startPosition.col - 1
-            } Felder übersprungen)`
+            } labels skipped)`
           : mode === "pick" && positions.length > 0
-            ? `${positions.length} Felder ausgewählt`
-            : "Alle Felder werden bedruckt"}
+            ? `${positions.length} labels selected`
+            : "All labels will be printed"}
       </p>
     </div>
   );

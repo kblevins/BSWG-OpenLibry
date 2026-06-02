@@ -67,7 +67,7 @@ export default async function handle(
           },
           "Book update request missing body"
         );
-        return res.status(400).json({ message: "Keine Daten übermittelt" });
+        return res.status(400).json({ message: "No data provided" });
       }
 
       const bookdata = req.body as BookType;
@@ -111,7 +111,7 @@ export default async function handle(
         );
         res
           .status(400)
-          .json({ message: "Fehler beim Speichern / Update: " + error });
+          .json({ message: "Error saving / updating: " + error });
       }
       break;
 

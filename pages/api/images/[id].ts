@@ -80,7 +80,13 @@ export default async function handle(
   }
 
   const filePath = path.join(basePath, fileName);
-  const defaultFilePath = path.join(basePath, "default.jpg");
+  // Fall back to the default cover baked into the public directory
+  const defaultFilePath = path.join(
+    process.cwd(),
+    "public",
+    "coverimages",
+    "default.jpg",
+  );
 
   // Check file existence upfront
   const customCoverExists = existsSync(filePath);
@@ -136,7 +142,7 @@ export default async function handle(
     res.setHeader("Content-Length", stat.size);
     res.setHeader("ETag", `"${etag}"`);
     res.setHeader("Last-Modified", stat.mtime.toUTCString());
-    res.setHeader("Cache-Control", "public, no-cache, must-revalidate");
+    res.setHeader("Cache-Control", `public, max-age=${maxAge}`);
 
     // Log the serve event
     if (isDefault) {

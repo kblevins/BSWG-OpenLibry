@@ -22,7 +22,7 @@ export default function BookAntolinDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Bücher aus der Antolin Datenbank</DialogTitle>
+          <DialogTitle>Books from the Antolin database</DialogTitle>
         </DialogHeader>
 
         <ul className="space-y-1.5">

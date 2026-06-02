@@ -92,7 +92,7 @@ export default function BookTopicsChips({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <Label className="text-xs text-muted-foreground">Schlagwörter</Label>
+      <Label className="text-xs text-muted-foreground">Topics</Label>
 
       {/* Chips */}
       <div className="flex flex-wrap gap-1.5 min-h-[2rem] items-start">
@@ -146,7 +146,7 @@ export default function BookTopicsChips({
                           setOpen(false);
                         }}
                       >
-                        „{inputValue}" hinzufügen
+                        Add "{inputValue}"
                       </button>
                     ) : (
                       <span className="text-muted-foreground px-3 py-2 text-sm">

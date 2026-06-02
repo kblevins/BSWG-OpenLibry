@@ -36,7 +36,7 @@ export default function TemplateSelector({
       )}
       <Select value={value} onValueChange={onChange} disabled={loading}>
         <SelectTrigger id="template-selector" data-cy="template-selector">
-          <SelectValue placeholder="Vorlage auswählen…" />
+          <SelectValue placeholder="Select template…" />
         </SelectTrigger>
         <SelectContent>
           {templates.map((template) => (

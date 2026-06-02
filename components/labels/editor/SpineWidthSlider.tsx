@@ -18,7 +18,7 @@ export default function SpineWidthSlider({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label>Rückenbreite</Label>
+        <Label>Spine width</Label>
         <span className="text-sm font-mono text-muted-foreground">
           {value}%
         </span>
@@ -32,7 +32,7 @@ export default function SpineWidthSlider({
         data-cy="spine-width-slider"
       />
       <p className="text-xs text-muted-foreground">
-        Anteil des Buchrücken-Felds an der Etikettenbreite
+        Proportion of the spine field relative to label width
       </p>
     </div>
   );

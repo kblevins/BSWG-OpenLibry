@@ -100,7 +100,7 @@ const CatalogCardGrid = memo(function CatalogCardGrid({
             onClick={onLoadMore}
             className="px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
           >
-            Weitere Bücher… {Math.max(0, renderedBooks.length - pageIndex)}
+            Load more… {Math.max(0, renderedBooks.length - pageIndex)}
           </button>
         </div>
       )}

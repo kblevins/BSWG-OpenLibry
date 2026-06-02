@@ -141,7 +141,7 @@ export function BatchScanEntryCard({
                   <Trash2 className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Löschen</TooltipContent>
+              <TooltipContent>Delete</TooltipContent>
             </Tooltip>
           </div>
         </div>
@@ -236,7 +236,7 @@ export function BatchScanEntryCard({
                   onChange={(v) => onUpdateBookData(entry.id, "title", v)}
                   required
                   error={!entry.bookData.title}
-                  errorText="Titel erforderlich"
+                  errorText="Title required"
                 />
                 <EditField
                   label="Autor"
@@ -271,7 +271,7 @@ export function BatchScanEntryCard({
                   }
                 />
                 <EditField
-                  label="Schlagwörter"
+                  label="Topics"
                   value={entry.bookData.topics || ""}
                   onChange={(v) => onUpdateBookData(entry.id, "topics", v)}
                 />
@@ -323,7 +323,7 @@ export function BatchScanEntryCard({
         <CardFooter className="px-4 pb-3 pt-0">
           <div className="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-700">
             <AlertTriangle className="size-3.5 shrink-0" />
-            Titel und Autor sind für den Import erforderlich
+            Title and author are required to import
           </div>
         </CardFooter>
       )}

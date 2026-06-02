@@ -31,7 +31,7 @@ export default function SheetSelector({
       <Label htmlFor="sheet-selector">Etikettenbogen</Label>
       <Select value={value} onValueChange={onChange} disabled={loading}>
         <SelectTrigger id="sheet-selector" data-cy="sheet-selector">
-          <SelectValue placeholder="Bogen auswählen…" />
+          <SelectValue placeholder="Select sheet…" />
         </SelectTrigger>
         <SelectContent>
           {sheets

@@ -61,7 +61,7 @@ export default function BookFilterForm({
 
   return (
     <div className="space-y-3">
-      <Label>Bücher auswählen</Label>
+      <Label>Select books</Label>
       <RadioGroup
         value={filter.type}
         onValueChange={(type) => {
@@ -116,7 +116,7 @@ export default function BookFilterForm({
                   >
                     <span className="truncate text-muted-foreground">
                       {selectedTopics.length === 0
-                        ? "Schlagwort auswählen…"
+                        ? "Select topic…"
                         : `${selectedTopics.length} ausgewählt`}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

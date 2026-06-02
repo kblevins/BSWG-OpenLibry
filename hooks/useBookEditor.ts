@@ -149,13 +149,13 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
 
   const handleAutoFill = useCallback(async (isbn: string) => {
     if (!isbn) {
-      toast.info("Bitte geben Sie eine ISBN ein.");
+      toast.info("Please enter an ISBN.");
       return;
     }
 
     const cleanedIsbn = isbn.replace(/[^0-9X]/gi, "");
     if (!cleanedIsbn) {
-      toast.info("Die ISBN ist ungültig (keine Zahlen gefunden).");
+      toast.info("ISBN is not valid (no numbers found).");
       return;
     }
 
@@ -174,25 +174,23 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
 
         if (coverResult.exists && coverResult.blob) {
           setCoverPreview(coverResult.blob);
-          toast.success("Stammdaten und Cover wurden erfolgreich geladen.");
+          toast.success("Book details and cover loaded successfully.");
         } else {
-          toast.success("Stammdaten wurden erfolgreich ausgefüllt.");
+          toast.success("Book details filled in successfully.");
         }
       } else {
         // Book data not found – maybe cover still available
         if (coverResult.exists && coverResult.blob) {
           setCoverPreview(coverResult.blob);
-          toast.info("Stammdaten nicht gefunden, aber Cover ist verfügbar.");
+          toast.info("Book details not found, but cover image is available.");
         } else {
-          toast.error(
-            "Stammdaten wurden leider nicht gefunden mit dieser ISBN.",
-          );
+          toast.error("No book details found for this ISBN.");
         }
       }
 
       setAutofillAttempted(true);
     } catch (e: any) {
-      toast.error(e?.message || "Fehler beim Laden der Buchdaten.");
+      toast.error(e?.message || "Error loading book data.");
     } finally {
       setIsAutoFilling(false);
     }
@@ -213,11 +211,11 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
   const handleSave = useCallback(async () => {
     // Validate required fields (applies to both modes now)
     if (!bookData.title?.trim()) {
-      toast.info("Bitte geben Sie einen Titel ein.");
+      toast.info("Please enter a title.");
       return;
     }
     if (!bookData.author?.trim()) {
-      toast.info("Bitte geben Sie einen Autor ein.");
+      toast.info("Please enter an author.");
       return;
     }
 
@@ -246,7 +244,7 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(
           errorData.message ||
-            `Fehler beim Erstellen: ${res.status} ${res.statusText}`,
+            `Error creating book: ${res.status} ${res.statusText}`,
         );
       }
 
@@ -258,16 +256,12 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
       if (coverData?.blob) {
         coverUploaded = await uploadCoverBlob(data.id, coverData.blob);
         if (!coverUploaded) {
-          toast.info(
-            "Buch erstellt, aber Cover konnte nicht hochgeladen werden.",
-          );
+          toast.info("Book created, but cover image could not be uploaded.");
         }
       }
 
-      const coverInfo = coverUploaded ? " (mit Cover)" : "";
-      toast.success(
-        `Buch "${bookData.title}" erfolgreich erstellt${coverInfo}!`,
-      );
+      const coverInfo = coverUploaded ? " (with cover)" : "";
+      toast.success(`"${bookData.title}" created successfully${coverInfo}!`);
       router.push("/book");
     }
 
@@ -285,12 +279,12 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         console.error("ERROR while saving book", res.statusText, errorData);
-        toast.error(errorData.message || "Fehler beim Speichern des Buches");
+        toast.error(errorData.message || "Error saving book");
         return;
       }
 
       await res.json();
-      toast.success(`Buch "${bookData.title}" gespeichert, gut gemacht!`);
+      toast.success(`"${bookData.title}" saved!`);
       router.push("/book");
     }
   }, [bookData, bookId, isNew, coverData, router]);
@@ -306,11 +300,11 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
         headers: { "Content-Type": "application/json" },
       });
       await res.json();
-      toast.success("Buch gelöscht");
+      toast.success("Book deleted");
       router.push("/book");
     } catch (error) {
       console.error("Failed to delete book:", error);
-      toast.error("Fehler beim Löschen des Buches");
+      toast.error("Error deleting book");
     }
   }, [bookId, router]);
 
@@ -326,10 +320,10 @@ export function useBookEditor(mode: BookEditorMode): UseBookEditorReturn {
           headers: { "Content-Type": "application/json" },
         });
         await res.json();
-        toast.success("Buch zurückgegeben, super!");
+        toast.success("Book returned!");
       } catch (error) {
         console.error("Failed to return book:", error);
-        toast.error("Fehler beim Zurückgeben des Buches", {});
+        toast.error("Error returning book");
       }
     },
     [bookId],

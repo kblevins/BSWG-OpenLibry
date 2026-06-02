@@ -200,7 +200,7 @@ export default function MergeFiles() {
             cursor-pointer
           "
         >
-          Bücher importieren
+          Import books
         </button>
       </div>
 

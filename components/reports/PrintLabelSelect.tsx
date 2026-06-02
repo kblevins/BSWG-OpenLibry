@@ -140,7 +140,7 @@ export default function PrintLabelSelect({
     <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold">
-          Label anklicken, die beim Druck übersprungen werden sollen
+          Click labels to skip them when printing
         </h2>
         <div>
           <Button

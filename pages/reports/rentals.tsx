@@ -379,7 +379,7 @@ async function exportToExcel(
   workbook.creator = "OpenLibry";
   workbook.created = new Date();
 
-  const sheet = workbook.addWorksheet("Ausleihen");
+  const sheet = workbook.addWorksheet("Loans");
 
   sheet.columns = columns
     .filter((col) => col.field !== "__check__")
@@ -771,9 +771,9 @@ export async function getServerSideProps() {
 
       return {
         id: r.id,
-        title: r.title || "Unbekannter Titel",
-        lastName: r.user?.lastName || "Unbekannt",
-        firstName: r.user?.firstName || "Unbekannt",
+        title: r.title || "Unknown title",
+        lastName: r.user?.lastName || "Unknown",
+        firstName: r.user?.firstName || "Unknown",
         remainingDays: diff,
         dueDate: convertDateToDayString(due.toDate()),
         renewalCount: r.renewalCount ?? 0,

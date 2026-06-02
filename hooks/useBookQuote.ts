@@ -5,75 +5,78 @@ import { useEffect, useState } from "react";
 
 const QUOTES = [
   {
-    text: "Ein Zimmer ohne Bücher ist wie ein Körper ohne Seele.",
+    text: "A room without books is like a body without a soul.",
     author: "Marcus Tullius Cicero",
   },
   {
-    text: "Das Lesen ist für den Geist das, was das Turnen für den Körper ist.",
+    text: "Reading is to the mind what exercise is to the body.",
     author: "Joseph Addison",
   },
   {
-    text: "Bücher sind die ruhigsten und beständigsten Freunde.",
+    text: "Books are the quietest and most constant of friends.",
     author: "Charles William Eliot",
   },
   {
-    text: "Ein gutes Buch ist der beste Freund, den man haben kann.",
+    text: "A good book is the best of friends.",
     author: "Theodore Roosevelt",
   },
   {
-    text: "Wer nicht liest, hat keinen Vorteil gegenüber dem, der nicht lesen kann.",
-    author: "Mark Twain",
+    text: "Not all those who wander are lost.",
+    author: "J.R.R. Tolkien",
   },
   {
-    text: "Bücher sind Spiegel: Man sieht in ihnen nur, was man bereits in sich trägt.",
+    text: "Books are mirrors: you only see in them what you already carry within you.",
     author: "Carlos Ruiz Zafón",
   },
   {
-    text: "Das Paradies wäre für mich eine Art Bibliothek.",
+    text: "I have always imagined that paradise will be a kind of library.",
     author: "Jorge Luis Borges",
   },
-  { text: "Nicht alle, die wandern, sind verloren.", author: "J.R.R. Tolkien" },
   {
-    text: "Es ist niemals zu spät, das zu werden, was man hätte sein können.",
+    text: "It is never too late to be what you might have been.",
     author: "George Eliot",
   },
   {
-    text: "Man kann einen Menschen nichts lehren. Man kann ihm nur helfen, es in sich selbst zu entdecken.",
-    author: "Galileo Galilei",
-  },
-  {
-    text: "Die Kunst des Lesens besteht darin, klug zu überfliegen.",
+    text: "The art of reading is to skip judiciously.",
     author: "André Maurois",
   },
   {
-    text: "Ein Buch ist wie ein Garten, den man in der Tasche trägt.",
-    author: "Chinesisches Sprichwort",
+    text: "A book is like a garden carried in the pocket.",
+    author: "Chinese proverb",
   },
   {
-    text: "Bücher sind Schiffe des Denkens, die die Wellen der Zeit durchsegeln.",
+    text: "Books are ships of thought on the waves of time.",
     author: "Francis Bacon",
   },
-  { text: "Heute ein Leser, morgen ein Anführer.", author: "Margaret Fuller" },
+  { text: "Today a reader, tomorrow a leader.", author: "Margaret Fuller" },
   {
-    text: "Die Bibliothek ist der Tempel des Lernens.",
-    author: "Gottfried Wilhelm Leibniz",
-  },
-  {
-    text: "Wenn du dir ein neues Buch kaufst, hast du einen neuen Freund gewonnen.",
-    author: "Umberto Eco",
-  },
-  {
-    text: "Lesen heißt, mit einem fremden Gehirn zu denken.",
+    text: "Reading is thinking with someone else's brain.",
     author: "Arthur Schopenhauer",
   },
-  { text: "So viele Bücher, so wenig Zeit.", author: "Frank Zappa" },
+  { text: "So many books, so little time.", author: "Frank Zappa" },
   {
-    text: "Bücher sind die Bienen, die den Honig des Geistes von Blüte zu Blüte tragen.",
+    text: "Books are the bees which carry the quickening pollen from one to another mind.",
     author: "James Russell Lowell",
   },
   {
-    text: "In Büchern liegt die Seele aller vergangenen Zeit.",
+    text: "In books lies the soul of the whole past time.",
     author: "Thomas Carlyle",
+  },
+  {
+    text: "Non-readers are no better off than those who cannot read.",
+    author: "Mark Twain",
+  },
+  {
+    text: "You can never get a cup of tea large enough or a book long enough to suit me.",
+    author: "C.S. Lewis",
+  },
+  {
+    text: "A reader lives a thousand lives before he dies.",
+    author: "George R.R. Martin",
+  },
+  {
+    text: "The more that you read, the more things you will know.",
+    author: "Dr. Seuss",
   },
 ];
 

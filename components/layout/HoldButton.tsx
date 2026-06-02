@@ -17,7 +17,7 @@ interface HoldButtonProps {
 const HoldButton: React.FC<HoldButtonProps> = ({
   onClick,
   duration = 3000,
-  buttonLabel = "Löschen",
+  buttonLabel = "Delete",
   "data-cy": dataCy,
 }) => {
   const [isHolding, setIsHolding] = useState(false);
@@ -78,7 +78,7 @@ const HoldButton: React.FC<HoldButtonProps> = ({
           </Button>
         </TooltipTrigger>
         <TooltipContent side="top">
-          Zum Ausführen gedrückt halten
+          Hold to confirm
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

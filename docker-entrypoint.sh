@@ -39,6 +39,13 @@ echo "=== End diagnostic ==="
 echo "Running database migrations..."
 npx prisma migrate deploy
 
+# Ensure cover image storage directory exists (may be a Railway Volume mount)
+COVER_DIR="${COVERIMAGE_FILESTORAGE_PATH:-/app/images}"
+if [ ! -d "$COVER_DIR" ]; then
+  echo "Creating cover image directory at $COVER_DIR ..."
+  mkdir -p "$COVER_DIR"
+fi
+
 # Ensure the custom templates directory exists
 if [ ! -d "$CUSTOM_DIR" ]; then
   echo "Creating custom directory at $CUSTOM_DIR ..."

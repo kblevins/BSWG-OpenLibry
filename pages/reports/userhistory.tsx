@@ -255,7 +255,7 @@ async function exportToExcel(data: HistoryRow[]): Promise<void> {
     { header: "Klasse", key: "schoolGrade", width: 10 },
     { header: "Name", key: "fullName", width: 30 },
     { header: "Anzahl", key: "borrowCount", width: 10 },
-    { header: "Bücher", key: "books", width: 70 },
+    { header: "Books", key: "books", width: 70 },
   ];
 
   const headerRow = sheet.getRow(1);

@@ -64,9 +64,9 @@ export default function LabelPrintPage({ topics }: LabelPrintPageProps) {
             data-cy="back-to-reports"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Zurück
+            Back
           </Button>
-          <h1 className="text-xl font-semibold">Buchetiketten drucken</h1>
+          <h1 className="text-xl font-semibold">Print Book Labels</h1>
         </div>
 
         {/* Main content: 2-column layout */}
@@ -75,7 +75,7 @@ export default function LabelPrintPage({ topics }: LabelPrintPageProps) {
           <div className="space-y-6">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Konfiguration</CardTitle>
+                <CardTitle className="text-base">Configuration</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <TemplateSelector
@@ -122,7 +122,7 @@ export default function LabelPrintPage({ topics }: LabelPrintPageProps) {
                   />
                 ) : (
                   <p className="text-sm text-muted-foreground py-4">
-                    Bitte zuerst einen Etikettenbogen auswählen.
+                    Please select a label sheet first.
                   </p>
                 )}
               </CardContent>

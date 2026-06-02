@@ -62,7 +62,7 @@ const BookImageUploadButton = ({
       data-cy="upload-image-button"
     >
       <Camera className="w-4 h-4" />
-      <span>Bild ändern</span>
+      <span>Change image</span>
       <input
         id="upload-image"
         hidden

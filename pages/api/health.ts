@@ -179,7 +179,7 @@ export default async function handle(
   if (!dbCheck.exists) {
     response.checks.database = {
       status: "error",
-      message: "Datenbankdatei nicht gefunden",
+      message: "Database file not found",
       details: {
         path: dbPath,
         databaseUrl: process.env.DATABASE_URL,
@@ -189,7 +189,7 @@ export default async function handle(
   } else if (!dbCheck.readable) {
     response.checks.database = {
       status: "error",
-      message: "Datenbankdatei nicht lesbar (Berechtigungsfehler)",
+      message: "Database file not readable (permission error)",
       details: { path: dbPath },
     };
     response.status = "error";
@@ -199,7 +199,7 @@ export default async function handle(
       await prisma.$queryRaw`SELECT 1`;
       response.checks.database = {
         status: "ok",
-        message: "Datenbankverbindung erfolgreich",
+        message: "Database connection successful",
         details: {
           path: dbPath,
           size: dbCheck.size,
@@ -209,7 +209,7 @@ export default async function handle(
     } catch (error) {
       response.checks.database = {
         status: "error",
-        message: "Datenbankverbindung fehlgeschlagen",
+        message: "Database connection failed",
         details: {
           path: dbPath,
           error: error instanceof Error ? error.message : String(error),
@@ -235,7 +235,7 @@ export default async function handle(
       if (!hasBooks && !hasUsers) {
         response.checks.data = {
           status: "warning",
-          message: "Datenbank ist leer - keine Bücher oder Nutzer vorhanden",
+          message: "Database is empty — no books or users found",
           details: {
             books: bookCount,
             users: userCount,
@@ -301,7 +301,7 @@ export default async function handle(
     } catch (error) {
       response.checks.data = {
         status: "error",
-        message: "Fehler beim Abfragen der Datenbank",
+        message: "Error querying the database",
         details: {
           error: error instanceof Error ? error.message : String(error),
         },
@@ -311,7 +311,7 @@ export default async function handle(
   } else {
     response.checks.data = {
       status: "error",
-      message: "Übersprungen - Datenbankverbindung fehlgeschlagen",
+      message: "Skipped — database connection failed",
     };
   }
 

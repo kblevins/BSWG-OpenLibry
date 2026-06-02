@@ -48,7 +48,7 @@ export default async function handle(
         // Worksheet names are wire-protocol identifiers — pinned to German
         // across all locales. Cypress fixtures + the import path read them
         // by name. See xlsColumnsMapping.ts for column header pinning.
-        const booksheet = workbook.addWorksheet("Bücherliste");
+        const booksheet = workbook.addWorksheet("Book List");
         const usersheet = workbook.addWorksheet("Userliste");
 
         booksheet.columns = xlsbookcolumns;

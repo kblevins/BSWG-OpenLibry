@@ -31,37 +31,37 @@ import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 
 /** Human-readable labels for field content types */
 const CONTENT_OPTIONS: { value: LabelFieldContent; label: string }[] = [
-  { value: "title", label: "Titel" },
-  { value: "subtitle", label: "Untertitel" },
-  { value: "author", label: "Autor" },
-  { value: "id", label: "Buchnummer" },
-  { value: "school", label: "Schulname" },
-  { value: "topics", label: "Themen (max. 3)" },
+  { value: "title", label: "Title" },
+  { value: "subtitle", label: "Subtitle" },
+  { value: "author", label: "Author" },
+  { value: "id", label: "Book number" },
+  { value: "school", label: "School name" },
+  { value: "topics", label: "Topics (max. 3)" },
   { value: "barcode", label: "Barcode" },
-  { value: "none", label: "Leer" },
+  { value: "none", label: "Empty" },
 ];
 
 /** Zone labels and their tooltip descriptions */
 const FIELD_META: Record<string, { label: string; tooltip: string }> = {
   spine: {
-    label: "Rücken",
+    label: "Spine",
     tooltip:
-      "Schmaler Streifen auf der linken Seite des Etiketts. Der Text wird um 90° gedreht angezeigt — ideal für kurze Beschriftungen wie Thema oder Autor.",
+      "Narrow strip on the left side of the label. Text is rotated 90° — ideal for short labels like topic or author.",
   },
   horizontal1: {
-    label: "Zeile 1",
+    label: "Row 1",
     tooltip:
-      "Obere der drei horizontalen Zeilen rechts vom Buchrücken. Meist für den Titel verwendet.",
+      "Top of the three horizontal rows to the right of the spine. Usually used for the title.",
   },
   horizontal2: {
-    label: "Zeile 2",
+    label: "Row 2",
     tooltip:
-      "Mittlere horizontale Zeile. Typischerweise für den Autor oder ein Schlagwort.",
+      "Middle horizontal row. Typically used for the author or a topic.",
   },
   horizontal3: {
-    label: "Zeile 3",
+    label: "Row 3",
     tooltip:
-      "Untere horizontale Zeile. Häufig für den Barcode oder eine zweite Infozeile.",
+      "Bottom horizontal row. Often used for the barcode or a second info line.",
   },
 };
 
@@ -86,7 +86,7 @@ export default function FieldAssigner({
   return (
     <TooltipProvider>
       <div className="space-y-3">
-        <Label>Feldzuordnung</Label>
+        <Label>Field assignment</Label>
 
         {fieldKeys.map((key) => {
           const field = fields[key];
@@ -164,8 +164,7 @@ export default function FieldAssigner({
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  Maximale Schriftgröße (pt). Der Text wird automatisch
-                  verkleinert, wenn er nicht passt.
+                  Max font size (pt). Text is automatically scaled down if it doesn't fit.
                 </TooltipContent>
               </Tooltip>
 
@@ -196,8 +195,8 @@ export default function FieldAssigner({
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  Maximale Zeichenanzahl. Längere Texte werden mit … gekürzt.
-                  Leer lassen für unbegrenzte Länge.
+                  Max character count. Longer text is truncated with …
+                  Leave blank for unlimited length.
                 </TooltipContent>
               </Tooltip>
 
@@ -218,7 +217,7 @@ export default function FieldAssigner({
                       <AlignLeft className="h-3 w-3" />
                     </ToggleGroupItem>
                   </TooltipTrigger>
-                  <TooltipContent>Linksbündig</TooltipContent>
+                  <TooltipContent>Align left</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -226,7 +225,7 @@ export default function FieldAssigner({
                       <AlignCenter className="h-3 w-3" />
                     </ToggleGroupItem>
                   </TooltipTrigger>
-                  <TooltipContent>Zentriert</TooltipContent>
+                  <TooltipContent>Center</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -234,7 +233,7 @@ export default function FieldAssigner({
                       <AlignRight className="h-3 w-3" />
                     </ToggleGroupItem>
                   </TooltipTrigger>
-                  <TooltipContent>Rechtsbündig</TooltipContent>
+                  <TooltipContent>Align right</TooltipContent>
                 </Tooltip>
               </ToggleGroup>
             </div>

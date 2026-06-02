@@ -65,9 +65,9 @@ export default function LabelEditorPage() {
               data-cy="back-to-reports"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
-              Zurück
+              Back
             </Button>
-            <h1 className="text-xl font-semibold">Etiketten-Vorlage</h1>
+            <h1 className="text-xl font-semibold">Label Template</h1>
           </div>
           <div className="flex items-center gap-2">
             <TemplateSelector
@@ -84,7 +84,7 @@ export default function LabelEditorPage() {
               data-cy="new-template-button"
             >
               <FilePlus className="h-4 w-4 mr-1" />
-              Neu
+              New
             </Button>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function LabelEditorPage() {
                   data-cy="save-success"
                 >
                   <CheckCircle className="h-3.5 w-3.5" />
-                  Vorlage gespeichert
+                  Template saved
                 </p>
               )}
 
@@ -171,7 +171,7 @@ export default function LabelEditorPage() {
 
               {dirty && !saveSuccess && (
                 <p className="text-xs text-muted-foreground">
-                  Ungespeicherte Änderungen
+                  Unsaved changes
                 </p>
               )}
             </div>

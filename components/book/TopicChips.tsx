@@ -28,7 +28,7 @@ const TopicChips = memo(function TopicChips({
       <div
         className="flex flex-wrap gap-1 mt-0.5"
         role="list"
-        aria-label="Schlagwörter"
+        aria-label="Topics"
       >
         {visibleTopics.map((topic) => (
           <button
@@ -50,7 +50,7 @@ const TopicChips = memo(function TopicChips({
             <TooltipTrigger asChild>
               <span
                 role="listitem"
-                aria-label={`${extraCount} weitere Schlagwörter: ${hiddenTopics.join(", ")}`}
+                aria-label={`${extraCount} more topics: ${hiddenTopics.join(", ")}`}
                 className="inline-flex items-center h-[18px] px-1.5
                            text-[0.55rem] font-medium text-white cursor-pointer
                            bg-secondary/50 hover:bg-secondary/70

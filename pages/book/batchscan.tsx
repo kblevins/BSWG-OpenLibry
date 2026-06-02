@@ -25,7 +25,7 @@ import {
   ScanBarcode,
 } from "lucide-react";
 import Head from "next/head";
-import { useRouter } from "next/router";
+
 import {
   KeyboardEvent,
   useCallback,
@@ -37,8 +37,6 @@ import {
 import { toast } from "sonner";
 
 export default function BatchScan() {
-  const router = useRouter();
-
   const [isbnInput, setIsbnInput] = useState("");
   const [entries, setEntries] = useState<ScannedEntry[]>([]);
   const [isImporting, setIsImporting] = useState(false);
@@ -65,7 +63,7 @@ export default function BatchScan() {
     const cleanedIsbn = isbnInput.trim().replace(/\D/g, "");
 
     if (!cleanedIsbn) {
-      toast.warning("Bitte eine gültige ISBN eingeben");
+      toast.warning("Please enter a valid ISBN");
       return;
     }
 
@@ -81,7 +79,7 @@ export default function BatchScan() {
       );
       playSound("scan");
       toast.success(
-        `"${existingEntry.bookData.title || cleanedIsbn}" - jetzt ${existingEntry.quantity + 1} Exemplare`,
+        `"${existingEntry.bookData.title || cleanedIsbn}" — now ${existingEntry.quantity + 1} copies`,
       );
       setIsbnInput("");
       inputRef.current?.focus();
@@ -139,14 +137,12 @@ export default function BatchScan() {
     if (bookData) {
       playSound("success");
       const coverInfo = coverResult.exists
-        ? ` (Cover von ${coverResult.source})`
+        ? ` (cover from ${coverResult.source})`
         : "";
-      toast.success(`"${bookData.title}" gefunden${coverInfo}`);
+      toast.success(`"${bookData.title}" found${coverInfo}`);
     } else {
       playSound("error");
-      toast.warning(
-        "ISBN nicht in Datenbank gefunden - manuelle Eingabe möglich",
-      );
+      toast.warning("ISBN not found — you can enter details manually");
     }
   }, [isbnInput, entries]);
 
@@ -166,7 +162,7 @@ export default function BatchScan() {
         URL.revokeObjectURL(entry.coverUrl);
       }
       setEntries((prev) => prev.filter((e) => e.id !== id));
-      toast.info("Eintrag gelöscht");
+      toast.info("Entry removed");
       inputRef.current?.focus();
     },
     [entries],
@@ -281,9 +277,7 @@ export default function BatchScan() {
     );
 
     if (validEntries.length === 0) {
-      toast.warning(
-        "Keine gültigen Einträge zum Importieren (Titel erforderlich)",
-      );
+      toast.warning("No valid entries to import (title is required)");
       return;
     }
 
@@ -366,17 +360,17 @@ export default function BatchScan() {
       playSound("success");
       const coverInfo =
         results.coversUploaded > 0
-          ? ` (${results.coversUploaded} Cover hochgeladen)`
+          ? ` (${results.coversUploaded} covers uploaded)`
           : "";
       toast.success(
-        `${results.success} Buch/Bücher erfolgreich importiert!${coverInfo}`,
+        `${results.success} ${results.success === 1 ? "book" : "books"} imported successfully!${coverInfo}`,
         { duration: 10000 },
       );
     }
 
     if (results.failed > 0) {
       toast.error(
-        `${results.failed} Buch/Bücher konnten nicht importiert werden`,
+        `${results.failed} ${results.failed === 1 ? "book" : "books"} could not be imported`,
       );
     }
 
@@ -387,14 +381,14 @@ export default function BatchScan() {
 
   const handleClearAll = useCallback(() => {
     if (entries.length === 0) return;
-    if (window.confirm("Alle Einträge löschen?")) {
+    if (window.confirm("Delete all entries?")) {
       entries.forEach((entry) => {
         if (entry.coverUrl?.startsWith("blob:")) {
           URL.revokeObjectURL(entry.coverUrl);
         }
       });
       setEntries([]);
-      toast.info("Alle Einträge gelöscht");
+      toast.info("All entries cleared");
       inputRef.current?.focus();
     }
   }, [entries]);
@@ -464,7 +458,7 @@ export default function BatchScan() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1.5 ml-1">
-                    Gleiche ISBN mehrfach scannen erhöht die Anzahl
+                    Scan the same ISBN multiple times to increase quantity
                   </p>
                 </div>
                 <Button
@@ -473,7 +467,7 @@ export default function BatchScan() {
                   className="h-11 shrink-0"
                 >
                   <PlusCircle />
-                  Hinzufügen
+                  Add
                 </Button>
               </div>
             </CardContent>
@@ -486,29 +480,29 @@ export default function BatchScan() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex flex-wrap gap-2">
                     <StatChip
-                      label={`Einträge: ${stats.totalEntries} (${stats.totalBooks} Bücher)`}
+                      label={`Entries: ${stats.totalEntries} (${stats.totalBooks} books)`}
                     />
                     <StatChip
                       icon={CheckCircle}
-                      label={`Gefunden: ${stats.found} (${stats.foundBooks} Bücher)`}
+                      label={`Found: ${stats.found} (${stats.foundBooks} books)`}
                       variant="success"
                     />
                     <StatChip
                       icon={AlertTriangle}
-                      label={`Nicht gefunden: ${stats.notFound}`}
+                      label={`Not found: ${stats.notFound}`}
                       variant="warning"
                     />
                     {stats.withCover > 0 && (
                       <StatChip
                         icon={Image}
-                        label={`Mit Cover: ${stats.withCover}`}
+                        label={`With cover: ${stats.withCover}`}
                         variant="info"
                       />
                     )}
                     {stats.loading > 0 && (
                       <StatChip
                         icon={Loader2}
-                        label={`Wird geladen: ${stats.loading}`}
+                        label={`Loading: ${stats.loading}`}
                       />
                     )}
                   </div>
@@ -521,7 +515,7 @@ export default function BatchScan() {
                       disabled={isImporting}
                       className="text-destructive border-destructive/30 hover:bg-destructive/10"
                     >
-                      Alle löschen
+                      Clear all
                     </Button>
                     <Button
                       size="sm"
@@ -532,12 +526,12 @@ export default function BatchScan() {
                       {isImporting ? (
                         <>
                           <Loader2 className="animate-spin" />
-                          Importiere…
+                          Importing…
                         </>
                       ) : (
                         <>
                           <Save />
-                          {stats.readyToImportBooks} Bücher importieren
+                          Import {stats.readyToImportBooks} {stats.readyToImportBooks === 1 ? "book" : "books"}
                         </>
                       )}
                     </Button>
@@ -562,11 +556,10 @@ export default function BatchScan() {
               <CardContent className="py-12 text-center">
                 <ScanBarcode className="size-20 text-muted-foreground/20 mx-auto mb-4" />
                 <h3 className="text-base font-semibold text-muted-foreground mb-1">
-                  Noch keine Bücher gescannt
+                  No books scanned yet
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Scannen Sie einen ISBN-Barcode oder geben Sie eine ISBN
-                  manuell ein
+                  Scan an ISBN barcode or enter an ISBN manually
                 </p>
               </CardContent>
             </Card>

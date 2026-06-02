@@ -16,7 +16,7 @@ const SAMPLE_BOOK = {
   id: "B-0042",
   title: "Der kleine Prinz",
   author: "Antoine de Saint-Exupéry",
-  subtitle: "Eine Erzählung",
+  subtitle: "A Story",
   topics: "Abenteuer; Freundschaft; Philosophie; Kinderbuch",
 };
 
@@ -124,7 +124,7 @@ export default function LabelPreview({ template, sheetId }: LabelPreviewProps) {
           </div>
         ) : (
           <div className="flex items-center justify-center h-[300px] text-sm text-muted-foreground">
-            Vorschau wird geladen, sobald ein Bogen ausgewählt ist…
+            Preview loads once a sheet is selected…
           </div>
         )}
       </div>

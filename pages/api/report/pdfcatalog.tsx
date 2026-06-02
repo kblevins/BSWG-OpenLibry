@@ -232,7 +232,7 @@ const CatalogDocument = ({ books }: { books: BookEntry[] }) => {
     <Document
       title="Bibliothekskatalog"
       author="OpenLibry"
-      subject={`Katalogübersicht ${SCHOOL_NAME} ${today}`}
+      subject={`Catalog overview ${SCHOOL_NAME} ${today}`}
     >
       <Page size="A4" style={styles.page} wrap>
         {/* ── Header ── */}
@@ -241,7 +241,7 @@ const CatalogDocument = ({ books }: { books: BookEntry[] }) => {
             Bibliothekskatalog {SCHOOL_NAME}
           </Text>
           <Text style={styles.headerMeta}>
-            {books.length} Bücher{"\n"}Stand: {today}
+            {books.length} {books.length === 1 ? "book" : "books"}{"\n"}As of: {today}
           </Text>
         </View>
 
@@ -297,7 +297,7 @@ const CatalogDocument = ({ books }: { books: BookEntry[] }) => {
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `OpenLibry • Katalogbericht vom ${today} • Seite ${pageNumber} von ${totalPages}`
+            `OpenLibry • Catalog report from ${today} • Page ${pageNumber} von ${totalPages}`
           }
           fixed
         />
@@ -361,7 +361,7 @@ export default async function handler(
       "Error generating catalog PDF",
     );
     return res.status(500).json({
-      error: "Fehler beim Erstellen des Katalog-PDFs",
+      error: "Error generating catalog PDF",
       detail: error instanceof Error ? error.message : String(error),
     });
   }

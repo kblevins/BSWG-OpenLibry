@@ -120,7 +120,7 @@ export function useTemplateEditor(initialTemplateId?: string) {
   // Save
   const handleSave = useCallback(async () => {
     if (!name.trim()) {
-      setSaveError("Bitte einen Namen für die Vorlage eingeben.");
+      setSaveError("Please enter a name for the template.");
       return;
     }
 

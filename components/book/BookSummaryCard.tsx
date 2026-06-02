@@ -120,7 +120,7 @@ function BookSummaryCard({
           onKeyDown={handleKeyDown}
           tabIndex={0}
           role="button"
-          aria-label={`Cover von ${book.title} vergrößern`}
+          aria-label={`Enlarge cover of ${book.title}`}
         >
           <Image
             src={src}
@@ -167,7 +167,7 @@ function BookSummaryCard({
               <TooltipTrigger asChild>
                 <button
                   onClick={handleReturnClick}
-                  aria-label="Buch abgeben"
+                  aria-label="Return book"
                   className="flex items-center justify-center
                              w-[26px] h-[26px] rounded-md
                              bg-destructive/85 text-white backdrop-blur-sm
@@ -179,7 +179,7 @@ function BookSummaryCard({
                   <ArrowLeftFromLine className="h-4 w-4" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent>Buch abgeben</TooltipContent>
+              <TooltipContent>Return book</TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -251,7 +251,7 @@ function BookSummaryCard({
                   <Link
                     href={`/book/${book.id}`}
                     data-cy="book_card_editbutton"
-                    aria-label="Buch-Details anzeigen"
+                    aria-label="View book details"
                     className="flex items-center justify-center gap-1
                                h-8 px-3 rounded-md
                                bg-white/25 text-white backdrop-blur-sm
@@ -265,7 +265,7 @@ function BookSummaryCard({
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  Details anzeigen &amp; bearbeiten
+                  View &amp; edit details
                 </TooltipContent>
               </Tooltip>
             </div>

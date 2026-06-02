@@ -327,7 +327,7 @@ async function exportToExcel(
   workbook.creator = "OpenLibry";
   workbook.created = new Date();
 
-  const sheet = workbook.addWorksheet("Bücher");
+  const sheet = workbook.addWorksheet("Books");
 
   sheet.columns = columns
     .filter((col) => col.field !== "__check__")

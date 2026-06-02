@@ -427,12 +427,11 @@ export default function NotFound() {
         </h1>
         {/* ✅ was: style={{ color: palette.primary.dark }} — primary-dark ≈ primary */}
         <p className="mb-1 text-center text-lg font-semibold text-primary sm:text-xl">
-          Seite nicht gefunden
+          Page not found
         </p>
         {/* ✅ was: style={{ color: palette.text.secondary }} → muted-foreground (#5A6166) */}
         <p className="mb-8 max-w-md text-center text-sm text-muted-foreground sm:text-base">
-          Die Seite konnte leider nicht gefunden werden — vielleicht wurde sie
-          ausgeliehen und noch nicht zurückgegeben?
+          This page could not be found — perhaps it was checked out and not yet returned?
         </p>
 
         {/* Actions */}
@@ -442,14 +441,14 @@ export default function NotFound() {
             onClick={() => router.back()}
             className="rounded-xl border border-primary/20 px-5 py-2.5 text-sm font-medium text-primary transition-all duration-200 hover:shadow-md"
           >
-            Zurück
+            Back
           </button>
           {/* ✅ was: style={{ backgroundColor: palette.primary.main, color: palette.primary.contrastText }} */}
           <button
             onClick={() => router.push("/")}
             className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
           >
-            Zur Startseite
+            Go home
           </button>
         </div>
       </div>

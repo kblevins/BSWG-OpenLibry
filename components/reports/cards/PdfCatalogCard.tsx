@@ -41,7 +41,7 @@ export default function PdfCatalogCard() {
           <FileDown className="w-5 h-5 text-primary" />
           Katalog
         </CardTitle>
-        <CardDescription>Alle Bücher als PDF-Katalog</CardDescription>
+        <CardDescription>Full catalog as PDF</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -50,8 +50,8 @@ export default function PdfCatalogCard() {
         ) : (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
-              Erstellt einen vollständigen Bücherkatalog mit Covern als
-              PDF-Dokument.
+              Generates a complete book catalog with covers as a
+              PDF document.
             </p>
             <Button
               onClick={handleDownload}

@@ -64,7 +64,7 @@ const CoverModal = memo(function CoverModal({
         </div>
 
         <p className="text-xs text-white/40 whitespace-nowrap">
-          Klicken zum Schließen oder ESC drücken
+          Click to close or press ESC
         </p>
       </DialogContent>
     </Dialog>

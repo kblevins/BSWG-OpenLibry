@@ -56,7 +56,7 @@ export default async function handler(
       },
       "Invalid ISBN format for cover fetch",
     );
-    return res.status(400).json({ error: "Ungültige ISBN", success: false });
+    return res.status(400).json({ error: "Invalid ISBN", success: false });
   }
 
   businessLogger.debug(
@@ -120,7 +120,7 @@ export default async function handler(
             reason:
               "Google API reports no image available (readingModes.image is false)",
           },
-          "Google hat kein Cover für diese ISBN.",
+          "Google returned no cover for this ISBN.",
         );
         return null;
       },
