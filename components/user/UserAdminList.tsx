@@ -26,7 +26,6 @@ import {
   AlertTriangle,
   BookOpen,
   ChevronDown,
-  GraduationCap,
   Pencil,
   Printer,
 } from "lucide-react";
@@ -223,17 +222,15 @@ export default function UserAdminList({
                           </Tooltip>
                         )}
                       </div>
-                      <div className="mt-0.5 flex items-center gap-1.5">
-                        <GraduationCap
-                          size={13}
-                          className="text-muted-foreground/50"
-                        />
-                        <span className="text-xs text-muted-foreground">
-                          {t("userAdminList.gradePrefix")} {user.schoolGrade}
-                          {user.schoolTeacherName &&
-                            ` · ${user.schoolTeacherName}`}
-                        </span>
-                      </div>
+                      {(user.email || user.phone) && (
+                        <div className="mt-0.5 flex items-center gap-1.5">
+                          <span className="text-xs text-muted-foreground">
+                            {user.email}
+                            {user.email && user.phone && " · "}
+                            {user.phone}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Quick Info Badge */}

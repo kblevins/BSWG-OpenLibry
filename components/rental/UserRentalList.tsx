@@ -64,7 +64,6 @@ export default function UserRentalList({
   const [showDetailSearch, setShowDetailSearch] = useState(false);
   const [searchParams, setSearchParams] = useState({
     overdue: false,
-    grade: "",
   });
 
   const [filteredUsers, exactMatchUserId] = useMemo(
@@ -123,13 +122,6 @@ export default function UserRentalList({
     books.find((b) => b.id === id)!;
   const getUserFromID = (id: number): UserType =>
     users.find((u) => u.id === id)!;
-
-  const getUniqueGrades = () =>
-    users.reduce((unique: Array<string>, user: UserType) => {
-      if (user.schoolGrade && !unique.includes(user.schoolGrade))
-        unique.push(user.schoolGrade);
-      return unique;
-    }, []);
 
   const extensionDueDate = calcExtensionDueDate(extensionDurationDays);
 
@@ -217,7 +209,6 @@ export default function UserRentalList({
           <div className="mt-2">
             <RentSearchParams
               overdue={searchParams.overdue}
-              grade={getUniqueGrades()}
               setUserSearchInput={setUserSearchInput}
             />
           </div>
@@ -273,8 +264,8 @@ export default function UserRentalList({
                         className="text-xs text-foreground whitespace-nowrap"
                         data-cy={`user_meta_${u.id}`}
                       >
-                        {t("rental.userMetaPrefix")} {u.id},{" "}
-                        {t("rental.userMetaGrade")} {u.schoolGrade}
+                        {t("rental.userMetaPrefix")} {u.id}
+                        {u.email && ` · ${u.email}`}
                       </span>
 
                       <OverdueIcon rentalsUser={rentalsUser} />

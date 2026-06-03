@@ -40,37 +40,22 @@ export function filterUsers(
 
   const lowerCaseSearch = strippedSearch.toLowerCase();
 
-  // Extract search modifiers (klasse, overdue)
-  const { foundKlasse, klasse, updatedString } =
-    searchAndRemoveKlasse(lowerCaseSearch);
-
-  const searchPattern = {
-    klasse: foundKlasse ? klasse.toLowerCase() : "",
-    overdue: updatedString.indexOf("fällig?") > -1,
-  };
-
-  const finalString = searchPattern.overdue
-    ? updatedString.replace("fällig?", "").trim()
-    : updatedString;
+  const isOverdue = lowerCaseSearch.indexOf("fällig?") > -1;
+  const finalString = isOverdue
+    ? lowerCaseSearch.replace("fällig?", "").trim()
+    : lowerCaseSearch;
 
   const filteredUsers = users.filter((u: UserType) => {
-    const filterForClass = foundKlasse;
-    const filterForOverdue = searchPattern.overdue;
-
     const foundString =
       u.lastName.toLowerCase().includes(finalString) ||
       u.firstName.toLowerCase().includes(finalString) ||
       u.id!.toString().includes(finalString);
 
-    const foundClass =
-      !filterForClass ||
-      u.schoolGrade!.toLowerCase().startsWith(searchPattern.klasse);
-
     const foundOverdue =
-      !filterForOverdue ||
-      searchPattern.overdue === hasOverdueBooks(booksForUser(u.id!, rentals));
+      !isOverdue ||
+      isOverdue === hasOverdueBooks(booksForUser(u.id!, rentals));
 
-    return foundString && foundClass && foundOverdue;
+    return foundString && foundOverdue;
   });
 
   const idMatchedUser = users.filter(

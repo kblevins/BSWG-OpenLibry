@@ -1,11 +1,9 @@
 import { UserType } from "@/entities/UserType";
 import {
   countUser,
-  getAllUsersBySchoolGrade,
   getAllUsersOrderById,
   getUser,
   getUsersInIdRange,
-  getUsersInIdRangeForSchoolgrade,
 } from "@/entities/user";
 import { t } from "@/lib/i18n";
 import { chunkArray } from "@/lib/utils/chunkArray";
@@ -349,18 +347,10 @@ export default async function handle(
         // - (no params): all users
         let printableUsers;
 
-        if ("start" in req.query || "schoolGrade" in req.query) {
-          // Filter by school grade and/or slice by position
-          const users =
-            "schoolGrade" in req.query
-              ? ((await getAllUsersBySchoolGrade(
-                  prisma,
-                  req.query.schoolGrade as string,
-                )) as any)
-              : await getAllUsersOrderById(prisma);
-
-          // Slice by start/end if provided
-          if ("start" in req.query && "end" in req.query) {
+        if ("start" in req.query) {
+          // Slice by position
+          const users = await getAllUsersOrderById(prisma);
+          if ("end" in req.query) {
             const start = parseInt(req.query.start as string);
             const end = parseInt(req.query.end as string);
             printableUsers = users.slice(start, end);
@@ -368,11 +358,11 @@ export default async function handle(
             printableUsers = users;
           }
           console.log(
-            "Printing labels for users (by grade/slice), count:",
+            "Printing labels for users (by slice), count:",
             printableUsers?.length,
           );
         } else if ("startId" in req.query || "endId" in req.query) {
-          // Filter by user ID range (with optional schoolGrade)
+          // Filter by user ID range
           let startId =
             "startId" in req.query
               ? parseInt(req.query.startId as string)
@@ -390,15 +380,7 @@ export default async function handle(
             startId = temp;
           }
 
-          printableUsers =
-            "schoolGrade" in req.query
-              ? ((await getUsersInIdRangeForSchoolgrade(
-                  prisma,
-                  startId,
-                  endId,
-                  req.query.schoolGrade as string,
-                )) as any)
-              : await getUsersInIdRange(prisma, startId, endId);
+          printableUsers = await getUsersInIdRange(prisma, startId, endId);
 
           console.log(
             "Printing labels for users (by ID range):",

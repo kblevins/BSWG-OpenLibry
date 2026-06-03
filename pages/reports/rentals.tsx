@@ -39,7 +39,6 @@ const COLUMN_WIDTHS: Record<string, number> = {
   dueDate: 120,
   renewalCount: 100,
   userid: 60,
-  schoolGrade: 80,
   rentalStatus: 100,
 };
 
@@ -62,7 +61,6 @@ interface RentalData {
   dueDate: string;
   renewalCount: number;
   userid?: number | string;
-  schoolGrade?: string;
   rentalStatus?: string;
 }
 
@@ -150,7 +148,6 @@ const pdfStyles = StyleSheet.create({
   colId: { width: "7%" },
   colTitle: { width: "25%", paddingRight: 4 },
   colName: { width: "16%", paddingRight: 4 },
-  colGrade: { width: "7%" },
   colDue: { width: "11%" },
   colDays: { width: "22%" },
   colRenewal: { width: "12%", textAlign: "center" },
@@ -211,9 +208,6 @@ const RentalsPdfDocument = ({
       <Text style={[pdfStyles.colName, pdfStyles.headerText]}>
         {t("pdfRentals.colName")}
       </Text>
-      <Text style={[pdfStyles.colGrade, pdfStyles.headerText]}>
-        {getColumnHeader("schoolGrade")}
-      </Text>
       <Text style={[pdfStyles.colDue, pdfStyles.headerText]}>
         {getColumnHeader("dueDate")}
       </Text>
@@ -256,7 +250,6 @@ const RentalsPdfDocument = ({
       <Text style={pdfStyles.colName}>
         {`${row.lastName || ""}, ${row.firstName || ""}`.substring(0, 18)}
       </Text>
-      <Text style={pdfStyles.colGrade}>{row.schoolGrade || ""}</Text>
       <Text style={pdfStyles.colDue}>{row.dueDate}</Text>
       <Text
         style={
@@ -778,7 +771,6 @@ export async function getServerSideProps() {
         dueDate: convertDateToDayString(due.toDate()),
         renewalCount: r.renewalCount ?? 0,
         userid: r.user?.id,
-        schoolGrade: r.user?.schoolGrade || "0",
       };
     });
 

@@ -35,9 +35,8 @@ const COLUMN_WIDTHS: Record<string, number> = {
   id: 40,
   lastName: 180,
   firstName: 150,
-  schoolGrade: 80,
-  schoolTeacherName: 150,
-  eMail: 200,
+  email: 200,
+  phone: 120,
 };
 
 const DEFAULT_COLUMN_WIDTH = 100;
@@ -120,11 +119,10 @@ const pdfStyles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   colId: { width: "8%" },
-  colLastName: { width: "18%", paddingRight: 4 },
-  colFirstName: { width: "18%", paddingRight: 4 },
-  colGrade: { width: "10%" },
-  colTeacher: { width: "18%", paddingRight: 4 },
-  colEmail: { width: "28%", paddingRight: 4 },
+  colLastName: { width: "22%", paddingRight: 4 },
+  colFirstName: { width: "20%", paddingRight: 4 },
+  colEmail: { width: "32%", paddingRight: 4 },
+  colPhone: { width: "18%", paddingRight: 4 },
   headerText: { color: "#fff", fontWeight: "bold" },
   inactiveText: { color: "#9e9e9e" },
   footer: {
@@ -181,14 +179,11 @@ const UsersPdfDocument = ({
       <Text style={[pdfStyles.colFirstName, pdfStyles.headerText]}>
         {getColumnHeader("firstName")}
       </Text>
-      <Text style={[pdfStyles.colGrade, pdfStyles.headerText]}>
-        {getColumnHeader("schoolGrade")}
-      </Text>
-      <Text style={[pdfStyles.colTeacher, pdfStyles.headerText]}>
-        {getColumnHeader("schoolTeacherName")}
-      </Text>
       <Text style={[pdfStyles.colEmail, pdfStyles.headerText]}>
-        {getColumnHeader("eMail")}
+        {getColumnHeader("email")}
+      </Text>
+      <Text style={[pdfStyles.colPhone, pdfStyles.headerText]}>
+        {getColumnHeader("phone")}
       </Text>
     </View>
   );
@@ -231,29 +226,20 @@ const UsersPdfDocument = ({
       <Text
         style={
           isInactive
-            ? [pdfStyles.colGrade, pdfStyles.inactiveText]
-            : pdfStyles.colGrade
-        }
-      >
-        {row.schoolGrade || ""}
-      </Text>
-      <Text
-        style={
-          isInactive
-            ? [pdfStyles.colTeacher, pdfStyles.inactiveText]
-            : pdfStyles.colTeacher
-        }
-      >
-        {String(row.schoolTeacherName || "").substring(0, 20)}
-      </Text>
-      <Text
-        style={
-          isInactive
             ? [pdfStyles.colEmail, pdfStyles.inactiveText]
             : pdfStyles.colEmail
         }
       >
-        {String(row.eMail || "").substring(0, 30)}
+        {String(row.email || "").substring(0, 36)}
+      </Text>
+      <Text
+        style={
+          isInactive
+            ? [pdfStyles.colPhone, pdfStyles.inactiveText]
+            : pdfStyles.colPhone
+        }
+      >
+        {String(row.phone || "").substring(0, 20)}
       </Text>
     </View>
   );
@@ -323,11 +309,11 @@ async function exportToPdf(
   rows: UserType[],
 ) {
   const activeUsers = rows
-    .filter((r) => r.active !== false)
+    .filter((r) => r.active === "active")
     .sort((a, b) => (a.lastName || "").localeCompare(b.lastName || "", "de"));
 
   const inactiveUsers = rows
-    .filter((r) => r.active === false)
+    .filter((r) => r.active !== "active")
     .sort((a, b) => (a.lastName || "").localeCompare(b.lastName || "", "de"));
 
   const blob = await pdf(

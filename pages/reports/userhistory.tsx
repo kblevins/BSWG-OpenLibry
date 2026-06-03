@@ -53,7 +53,6 @@ interface BorrowedBook {
 }
 
 interface HistoryRow {
-  schoolGrade: string;
   lastName: string;
   firstName: string;
   borrowedBooks: BorrowedBook[];
@@ -70,7 +69,6 @@ interface HistoryPropsType {
 // =============================================================================
 
 const COLUMN_WIDTHS = {
-  schoolGrade: 100,
   fullName: 225,
   borrowCount: 80,
   borrowedBooks: 450,
@@ -108,8 +106,7 @@ const pdfStyles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: "#ffffff",
   },
-  colGrade: { width: "10%" },
-  colName: { width: "22%", paddingRight: 4 },
+  colName: { width: "32%", paddingRight: 4 },
   colCount: { width: "8%", textAlign: "center" },
   colBooks: { width: "60%" },
   headerText: { color: "#fff", fontWeight: "bold" },
@@ -162,9 +159,6 @@ const HistoryPdfDocument = ({ data }: HistoryPdfProps) => {
 
         {/* Table Header */}
         <View style={pdfStyles.tableHeader}>
-          <Text style={[pdfStyles.colGrade, pdfStyles.headerText]}>
-            {t("pdfHistory.colKlasse")}
-          </Text>
           <Text style={[pdfStyles.colName, pdfStyles.headerText]}>
             {t("pdfHistory.colName")}
           </Text>
@@ -188,7 +182,6 @@ const HistoryPdfDocument = ({ data }: HistoryPdfProps) => {
 
             return (
               <View key={index} style={pdfStyles.tableRow}>
-                <Text style={pdfStyles.colGrade}>{row.schoolGrade}</Text>
                 <Text style={pdfStyles.colName}>
                   {`${row.lastName}, ${row.firstName}`}
                 </Text>
@@ -252,7 +245,6 @@ async function exportToExcel(data: HistoryRow[]): Promise<void> {
   const sheet = workbook.addWorksheet("Historie");
 
   sheet.columns = [
-    { header: "Klasse", key: "schoolGrade", width: 10 },
     { header: "Name", key: "fullName", width: 30 },
     { header: "Anzahl", key: "borrowCount", width: 10 },
     { header: "Books", key: "books", width: 70 },
@@ -272,7 +264,6 @@ async function exportToExcel(data: HistoryRow[]): Promise<void> {
 
   data.forEach((item) => {
     const row = sheet.addRow({
-      schoolGrade: item.schoolGrade,
       fullName: `${item.lastName}, ${item.firstName}`,
       borrowCount: item.borrowCount,
       books: item.borrowedBooks
@@ -364,9 +355,6 @@ function MobileHistoryCard({
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 transition-colors"
       >
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-medium bg-blue-100 text-blue-700 rounded px-1.5 py-0.5 shrink-0">
-            {row.schoolGrade}
-          </span>
           <span className="font-medium text-gray-800 truncate">
             {row.lastName}, {row.firstName}
           </span>
@@ -443,46 +431,11 @@ export default function UserHistory({ history, error }: HistoryPropsType) {
     [history, activeOnly],
   );
 
-  const allGrades = useMemo(() => {
-    const grades = new Set(
-      (history ?? [])
-        .map((h) => h.schoolGrade)
-        .filter((g): g is string => Boolean(g)),
-    );
-    return Array.from(grades).sort();
-  }, [history]);
-
   const headerClass =
     "uppercase text-xs font-semibold text-muted-foreground tracking-wider mb-1";
 
   const columns = useMemo<ColumnDef<HistoryRow>[]>(
     () => [
-      {
-        accessorKey: "schoolGrade",
-        size: COLUMN_WIDTHS.schoolGrade,
-        header: ({ column }) => (
-          <div className="flex flex-col gap-1.5 py-1">
-            <span className={headerClass}>
-              {t("reportHistoryPage.colKlasse")}
-            </span>
-            <select
-              value={(column.getFilterValue() as string) ?? ""}
-              onChange={(e) =>
-                column.setFilterValue(e.target.value || undefined)
-              }
-              data-cy="history-grade-filter"
-              className="font-normal text-xs border border-gray-300 rounded px-1 py-1 bg-white outline-none focus:ring-1 focus:ring-primary text-black w-20"
-            >
-              <option value="">{t("reportHistoryPage.filterAllGrades")}</option>
-              {allGrades.map((grade) => (
-                <option key={grade} value={grade}>
-                  {grade}
-                </option>
-              ))}
-            </select>
-          </div>
-        ),
-      },
       {
         id: "fullName",
         accessorFn: (row) => `${row.lastName}, ${row.firstName}`,
@@ -577,7 +530,7 @@ export default function UserHistory({ history, error }: HistoryPropsType) {
         },
       },
     ],
-    [allGrades],
+    [],
   );
 
   const table = useReactTable({
@@ -754,29 +707,6 @@ export default function UserHistory({ history, error }: HistoryPropsType) {
                   className="w-full text-sm border border-gray-200 rounded-lg pl-8 pr-3 py-2 bg-white outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
-              <select
-                value={
-                  (table
-                    .getColumn("schoolGrade")
-                    ?.getFilterValue() as string) ?? ""
-                }
-                onChange={(e) =>
-                  table
-                    .getColumn("schoolGrade")
-                    ?.setFilterValue(e.target.value || undefined)
-                }
-                data-cy="history-mobile-grade-filter"
-                className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-1 focus:ring-primary"
-              >
-                <option value="">
-                  {t("reportHistoryPage.mobileGradeAll")}
-                </option>
-                {allGrades.map((grade) => (
-                  <option key={grade} value={grade}>
-                    {grade}
-                  </option>
-                ))}
-              </select>
             </div>
 
             {/* Desktop table — hidden on small screens */}
@@ -965,7 +895,6 @@ export async function getServerSideProps() {
         .sort((a, b) => b.rawDate.localeCompare(a.rawDate));
 
       return {
-        schoolGrade: user.schoolGrade ?? "-",
         lastName: user.lastName,
         firstName: user.firstName,
         borrowedBooks,

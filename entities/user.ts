@@ -131,55 +131,6 @@ export async function getUsersInIdRange(
   }
 }
 
-export async function getUsersInIdRangeForSchoolgrade(
-  client: PrismaClient,
-  startId: number,
-  endId: number,
-  schoolGrade: string
-) {
-  try {
-    return await client.user.findMany({
-      where: {
-        AND: [
-          {
-            id: {
-              gte: startId,
-            },
-          },
-          {
-            id: {
-              lte: endId,
-            },
-          },
-          { schoolGrade },
-        ],
-      },
-      orderBy: [
-        {
-          id: "asc",
-        },
-      ],
-    });
-  } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError ||
-      e instanceof Prisma.PrismaClientValidationError
-    ) {
-      errorLogger.error(
-        {
-          event: LogEvents.DB_ERROR,
-          operation: "getUsersInIdRangeForSchoolgrade",
-          startId,
-          endId,
-          schoolGrade,
-          error: e instanceof Error ? e.message : String(e),
-        },
-        "Error in getUsersInIdRangeForSchoolgrade"
-      );
-    }
-    throw e;
-  }
-}
 
 export async function countUser(client: PrismaClient) {
   try {

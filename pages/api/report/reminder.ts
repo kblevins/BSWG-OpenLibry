@@ -85,7 +85,6 @@ const TOP_LEVEL_PLACEHOLDERS = [
   "firstName",
   "lastName",
   "overdue_username",
-  "schoolGrade",
   "reminder_min_count",
   "today_date",
 ] as const;
@@ -121,7 +120,6 @@ interface ReminderData {
   firstName: string;
   lastName: string;
   overdue_username: string;
-  schoolGrade: string;
   reminder_min_count: number;
   today_date: string;
   book_list: BookListItem[];
@@ -138,7 +136,6 @@ interface RentalRecord {
     id: number;
     firstName: string | null;
     lastName: string | null;
-    schoolGrade: string | null;
   } | null;
 }
 
@@ -312,7 +309,6 @@ function validateTemplate(
       firstName: "Max",
       lastName: "Mustermann",
       overdue_username: "Max Mustermann",
-      schoolGrade: "3a",
       reminder_min_count: 5,
       today_date: dayjs().format("DD.MM.YYYY"),
       book_list: [
@@ -523,7 +519,6 @@ function buildReminderData(records: RentalRecord[]): ReminderData[] {
       firstName: user.firstName ?? "",
       lastName: user.lastName ?? "",
       overdue_username: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
-      schoolGrade: user.schoolGrade ?? "",
       reminder_min_count: REMINDER_RENEWAL_COUNT,
       today_date: dayjs().format("DD.MM.YYYY"),
       book_list: userRecords.map((r) => ({
@@ -658,8 +653,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             id: true,
             firstName: true,
             lastName: true,
-            schoolGrade: true,
-          },
+                },
         },
       },
     });
@@ -805,7 +799,6 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
               id: r.user.id,
               firstName: r.user.firstName ?? "",
               lastName: r.user.lastName ?? "",
-              schoolGrade: r.user.schoolGrade ?? "",
             }
           : null,
       });

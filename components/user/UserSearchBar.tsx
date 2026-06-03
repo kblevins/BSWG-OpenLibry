@@ -20,7 +20,6 @@ import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import {
   CheckCheck,
-  GraduationCap,
   MoreVertical,
   Search,
   SlidersHorizontal,
@@ -90,7 +89,6 @@ interface UserSearchBarProps {
   onSelectAll: () => void;
   onCreateUser: () => void;
   checked: Record<string, boolean>;
-  onIncreaseGrade: () => void;
   onDeleteUsers: () => void;
   confirmDelete: boolean;
   settingsContent?: ReactNode;
@@ -104,7 +102,6 @@ export default function UserSearchBar({
   onSelectAll,
   onCreateUser,
   checked,
-  onIncreaseGrade,
   onDeleteUsers,
   confirmDelete,
   settingsContent,
@@ -196,16 +193,6 @@ export default function UserSearchBar({
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end" className="w-52">
-                  <DropdownMenuItem
-                    onClick={onIncreaseGrade}
-                    className="gap-3 text-primary"
-                  >
-                    <GraduationCap size={16} />
-                    {t("userSearchBar.increaseGrade")}
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
                   <DropdownMenuItem
                     onClick={onDeleteUsers}
                     className={cn(

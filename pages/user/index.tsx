@@ -10,7 +10,7 @@ import { prisma } from "@/entities/db";
 import { getAllUsers } from "@/entities/user";
 import { t } from "@/lib/i18n";
 import { convertDateToDayString } from "@/lib/utils/dateutils";
-import getMaxId, { increaseNumberInString } from "@/lib/utils/id";
+import getMaxId from "@/lib/utils/id";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
@@ -66,7 +66,7 @@ export default function UsersPage({ users, rentals }: UsersPageProps) {
       const user: UserType = {
         firstName: "",
         lastName: "",
-        active: true,
+        active: "active",
       };
       if (!autoID) user.id = proposedID;
 
@@ -103,26 +103,6 @@ export default function UsersPage({ users, rentals }: UsersPageProps) {
     setChecked(newChecked);
   }, [users, checked]);
 
-  const handleIncreaseGrade = useCallback(() => {
-    const updatedUserIDs = users
-      .filter((u) => checked[u.id!])
-      .map((u) => ({
-        id: u.id,
-        grade: increaseNumberInString(u.schoolGrade),
-      }));
-
-    fetch("/api/batch/grade", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedUserIDs),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        toast.success(t("userPage.toastGradeIncreased"));
-        router.push("user");
-      });
-  }, [users, checked, router]);
-
   const handleDeleteUsers = useCallback(() => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -147,15 +127,6 @@ export default function UsersPage({ users, rentals }: UsersPageProps) {
       .catch(() => setConfirmDelete(false));
   }, [users, checked, confirmDelete, router]);
 
-  const uniqueGrades = useMemo(() => {
-    return users.reduce<string[]>((unique, user) => {
-      if (user.schoolGrade && !unique.includes(user.schoolGrade)) {
-        unique.push(user.schoolGrade);
-      }
-      return unique;
-    }, []);
-  }, [users]);
-
   return (
     <Layout>
       <NewUserDialog
@@ -179,12 +150,11 @@ export default function UsersPage({ users, rentals }: UsersPageProps) {
               onSelectAll={handleSelectAll}
               onCreateUser={() => setShowNewUserDialog(true)}
               checked={checked}
-              onIncreaseGrade={handleIncreaseGrade}
               onDeleteUsers={handleDeleteUsers}
               confirmDelete={confirmDelete}
               settingsContent={
                 <UserSearchFilters
-                  grades={uniqueGrades}
+                  grades={[]}
                   onFilterChange={handleFilterChange}
                 />
               }
