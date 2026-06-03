@@ -477,10 +477,6 @@ export default function Users({ users }: UsersPropsType) {
   ).length;
   const totalCount = reportRows.length;
 
-  const uniqueGrades = new Set(
-    reportRows.map((r: any) => r.schoolGrade).filter(Boolean),
-  ).size;
-
   const pageIndex = table.getState().pagination.pageIndex;
   const pageCount = table.getPageCount();
 
@@ -502,7 +498,7 @@ export default function Users({ users }: UsersPropsType) {
                   totalCount === 1
                     ? "reportUsersPage.statusBaseOne"
                     : "reportUsersPage.statusBaseMany",
-                  { totalCount, grades: uniqueGrades },
+                  { totalCount },
                 )}
                 {inactiveCount > 0 && (
                   <span className="font-normal text-gray-500 ml-1">

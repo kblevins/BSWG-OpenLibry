@@ -57,40 +57,6 @@ describe("Rental History Report", () => {
       });
     });
 
-    it("filters rows by school grade", () => {
-      cy.get("[data-cy=history-table] tbody tr").then(($rows) => {
-        const totalRows = $rows.length;
-
-        // Find the first non-empty grade option
-        cy.get("[data-cy=history-grade-filter] option").then(($options) => {
-          const gradeOption = $options
-            .toArray()
-            .find((o) => (o as HTMLOptionElement).value !== "") as
-            | HTMLOptionElement
-            | undefined;
-
-          if (!gradeOption) return;
-
-          cy.get("[data-cy=history-grade-filter]").select(gradeOption.value);
-
-          // After filtering, row count must be ≤ the unfiltered total.
-          // Zero rows (grade has no active borrowers) is a valid outcome —
-          // the no-results message is expected in that case.
-          cy.get("[data-cy=history-table] tbody tr").should(
-            "have.length.lte",
-            totalRows,
-          );
-
-          // Reset filter
-          cy.get("[data-cy=history-grade-filter]").select("");
-          cy.get("[data-cy=history-table] tbody tr").should(
-            "have.length",
-            totalRows,
-          );
-        });
-      });
-    });
-
     it("filters rows by name search and clears with Escape", () => {
       cy.get("[data-cy=history-table] tbody tr").then(($rows) => {
         const totalRows = $rows.length;
@@ -187,39 +153,6 @@ describe("Rental History Report", () => {
         cy.get(
           "[data-cy=history-mobile-list] [data-cy=history-mobile-card]",
         ).should("have.length", totalCards);
-      });
-    });
-
-    it("filters cards by grade via the mobile grade select", () => {
-      cy.get("[data-cy=history-mobile-card]").then(($cards) => {
-        const totalCards = $cards.length;
-
-        cy.get("[data-cy=history-mobile-grade-filter] option").then(
-          ($options) => {
-            const gradeOption = $options
-              .toArray()
-              .find((o) => (o as HTMLOptionElement).value !== "") as
-              | HTMLOptionElement
-              | undefined;
-
-            if (!gradeOption) return;
-
-            cy.get("[data-cy=history-mobile-grade-filter]").select(
-              gradeOption.value,
-            );
-
-            cy.get(
-              "[data-cy=history-mobile-list] [data-cy=history-mobile-card]",
-            ).should("have.length.lte", totalCards);
-
-            // Reset
-            cy.get("[data-cy=history-mobile-grade-filter]").select("");
-
-            cy.get(
-              "[data-cy=history-mobile-list] [data-cy=history-mobile-card]",
-            ).should("have.length", totalCards);
-          },
-        );
       });
     });
 

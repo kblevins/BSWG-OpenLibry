@@ -19,7 +19,6 @@ export const LogEvents = {
   USER_UPDATED: "user.updated",
   USER_DELETED: "user.deleted",
   USER_RETRIEVED: "user.retrieved",
-  USER_GRADE_BATCH_UPDATE: "user.grade.batch.update",
   USER_BATCH_DELETE: "user.batch.delete",
 
   // Auth events

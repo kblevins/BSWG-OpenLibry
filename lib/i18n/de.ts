@@ -66,7 +66,6 @@ export const de = {
     bookPlural: "Bücher",
 
     userMetaPrefix: "Nr.",
-    userMetaGrade: "Klasse",
 
     noBorrowedBooks: "Keine ausgeliehenen Bücher",
 
@@ -82,7 +81,6 @@ export const de = {
   },
   rentSearchParams: {
     overdue: "Überfällig",
-    grade: "Klasse",
   },
   rentalPage: {
     serverReachableButFailed:
@@ -115,7 +113,6 @@ export const de = {
     selected: "ausgewählt",
     deselect: "Aufheben",
     actions: "Aktionen",
-    increaseGrade: "Klasse erhöhen",
     deleteUsers: "Nutzer löschen",
     confirmDelete: "Wirklich löschen?",
   },
@@ -126,10 +123,7 @@ export const de = {
     resetTooltip: "Filter zurücksetzen",
     status: "Status",
     onlyOverdue: "Nur überfällige",
-    grade: "Klasse",
-    allGrades: "Alle Klassen",
     overdueChip: "Überfällig",
-    gradeChipPrefix: "Klasse",
   },
   userAdminList: {
     noUsersSearch: "Keine Benutzer gefunden",
@@ -140,7 +134,6 @@ export const de = {
     booksRentedPlural: "Bücher ausgeliehen",
     hasOverdue: "Hat überfällige Bücher",
     metaPrefix: "Nr.",
-    gradePrefix: "Klasse",
     rentalSection: "Ausgeliehene Bücher",
     noBorrowedBooks: "Keine ausgeliehenen Bücher",
     edit: "Editieren",
@@ -162,7 +155,6 @@ export const de = {
     bookPlural: "Bücher",
     overdue: "überfällig",
     metaPrefix: "Nr.",
-    gradePrefix: "Klasse",
     sectionPersonalData: "Daten",
     fieldFirstName: "Vorname",
     fieldLastName: "Nachname",
@@ -242,7 +234,6 @@ export const de = {
   userPage: {
     toastUserCreateFailed:
       "Neuer User konnte nicht erzeugt werden. Ist die Nutzer ID schon vorhanden?",
-    toastGradeIncreased: "Klassenstufe für Schüler erhöht",
     toastUsersDeleted: "Schüler erfolgreich gelöscht",
   },
   userDetailPage: {
@@ -590,7 +581,7 @@ export const de = {
             label: "Textzeile 1",
             description:
               'Erste Textzeile auf dem Ausweis. Format: ["Inhalt","top","left","Breite","margin","Farbe",Schriftgröße]',
-            hint: "Platzhalter: User.firstName, User.lastName, User.schoolGrade",
+            hint: "Platzhalter: User.firstName, User.lastName",
           },
           USERLABEL_LINE_2: {
             label: "Textzeile 2",
@@ -683,11 +674,6 @@ export const de = {
     toId: "Bis ID",
     filtersHeading: "Filter",
     singleIdLabel: "Etikett für UserID",
-    classFilterLabel: "Klassen Filter",
-    classSelectPlaceholder: "Klasse auswählen…",
-    classSearchPlaceholder: "Suche Klasse…",
-    classNotFound: "Keine Klasse gefunden.",
-    filterClear: "Filter zurücksetzen",
     generatePdf: "Erzeuge PDF",
   },
   bookLabelPrintCard: {
@@ -722,8 +708,8 @@ export const de = {
     // Two-part composition:
     //   statusBase always shown
     //   statusInactiveSuffix appended (parenthesized) when inactiveCount > 0
-    statusBaseOne: "👥 {totalCount} Nutzer • {grades} Klassen",
-    statusBaseMany: "👥 {totalCount} Nutzer • {grades} Klassen",
+    statusBaseOne: "👥 {totalCount} Nutzer",
+    statusBaseMany: "👥 {totalCount} Nutzer",
     statusInactiveSuffix: "({inactiveCount} inaktiv)",
   },
   reportRentalsPage: {
@@ -738,14 +724,11 @@ export const de = {
     exportError: "{action}-Export fehlgeschlagen. Bitte erneut versuchen.",
     exportScopeHint:
       "Export umfasst die aktuelle gefilterte Ansicht ({count} Nutzer).",
-    colKlasse: "Klasse",
     colName: "Name (Suche)",
     colTotal: "Gesamt",
     colHistory: "Ausleih-Historie",
-    filterAllGrades: "Alle",
     filterNamePlaceholder: "Name tippen...",
     mobileNamePlaceholder: "Name suchen…",
-    mobileGradeAll: "Alle Klassen",
     noResults: "Keine Ergebnisse für diesen Filter",
     cardBooksSuffix: "Bücher",
     cardEmpty: "Keine Ausleihen",
@@ -840,7 +823,6 @@ export const de = {
   pdfHistory: {
     titleHistory: "Ausleih-Historie Bericht",
     subtitleTotal: "{count} Nutzer",
-    colKlasse: "Klasse",
     colName: "Name",
     colTotal: "Gesamt",
     colBooks: "Bücher (Datum | ID | Titel)",

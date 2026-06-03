@@ -65,7 +65,6 @@ export const en: Dictionary = {
     bookPlural: "books",
 
     userMetaPrefix: "No.",
-    userMetaGrade: "Grade",
 
     noBorrowedBooks: "No borrowed books",
 
@@ -81,7 +80,6 @@ export const en: Dictionary = {
   },
   rentSearchParams: {
     overdue: "Overdue",
-    grade: "Grade",
   },
   rentalPage: {
     serverReachableButFailed:
@@ -113,7 +111,6 @@ export const en: Dictionary = {
     selected: "selected",
     deselect: "Clear",
     actions: "Actions",
-    increaseGrade: "Increase grade",
     deleteUsers: "Delete users",
     confirmDelete: "Really delete?",
   },
@@ -124,10 +121,7 @@ export const en: Dictionary = {
     resetTooltip: "Reset filters",
     status: "Status",
     onlyOverdue: "Only overdue",
-    grade: "Grade",
-    allGrades: "All grades",
     overdueChip: "Overdue",
-    gradeChipPrefix: "Grade",
   },
   userAdminList: {
     noUsersSearch: "No users found",
@@ -138,7 +132,6 @@ export const en: Dictionary = {
     booksRentedPlural: "books borrowed",
     hasOverdue: "Has overdue books",
     metaPrefix: "No.",
-    gradePrefix: "Grade",
     rentalSection: "Borrowed books",
     noBorrowedBooks: "No borrowed books",
     edit: "Edit",
@@ -160,7 +153,6 @@ export const en: Dictionary = {
     bookPlural: "books",
     overdue: "overdue",
     metaPrefix: "No.",
-    gradePrefix: "Grade",
     sectionPersonalData: "Details",
     fieldFirstName: "First name",
     fieldLastName: "Last name",
@@ -238,7 +230,6 @@ export const en: Dictionary = {
   userPage: {
     toastUserCreateFailed:
       "New user could not be created. Is the user ID already taken?",
-    toastGradeIncreased: "Grade increased for selected users",
     toastUsersDeleted: "Users deleted successfully",
   },
   userDetailPage: {
@@ -579,7 +570,7 @@ export const en: Dictionary = {
             label: "Text line 1",
             description:
               'First text line on the card. Format: ["content","top","left","width","margin","color",fontSize]',
-            hint: "Placeholders: User.firstName, User.lastName, User.schoolGrade",
+            hint: "Placeholders: User.firstName, User.lastName",
           },
           USERLABEL_LINE_2: {
             label: "Text line 2",
@@ -668,11 +659,6 @@ export const en: Dictionary = {
     toId: "To ID",
     filtersHeading: "Filters",
     singleIdLabel: "Card for user ID",
-    classFilterLabel: "Grade filter",
-    classSelectPlaceholder: "Select grade…",
-    classSearchPlaceholder: "Search grade…",
-    classNotFound: "No grade found.",
-    filterClear: "Clear filter",
     generatePdf: "Generate PDF",
   },
   bookLabelPrintCard: {
@@ -703,8 +689,8 @@ export const en: Dictionary = {
     statusMany: "📚 {total} books • {rented} lent out • {available} available",
   },
   reportUsersPage: {
-    statusBaseOne: "👥 {totalCount} user • {grades} grades",
-    statusBaseMany: "👥 {totalCount} users • {grades} grades",
+    statusBaseOne: "👥 {totalCount} user",
+    statusBaseMany: "👥 {totalCount} users",
     statusInactiveSuffix: "({inactiveCount} inactive)",
   },
   reportRentalsPage: {
@@ -718,14 +704,11 @@ export const en: Dictionary = {
     activeOnly: "Only active users",
     exportError: "{action} export failed. Please try again.",
     exportScopeHint: "Export covers the current filtered view ({count} users).",
-    colKlasse: "Grade",
     colName: "Name (search)",
     colTotal: "Total",
     colHistory: "Loan history",
-    filterAllGrades: "All",
     filterNamePlaceholder: "Type name...",
     mobileNamePlaceholder: "Search name…",
-    mobileGradeAll: "All grades",
     noResults: "No results for this filter",
     cardBooksSuffix: "books",
     cardEmpty: "No loans",
@@ -812,7 +795,6 @@ export const en: Dictionary = {
   pdfHistory: {
     titleHistory: "Loan History Report",
     subtitleTotal: "{count} users",
-    colKlasse: "Grade",
     colName: "Name",
     colTotal: "Total",
     colBooks: "Books (date | ID | title)",

@@ -43,7 +43,6 @@ const DEFAULT_USERLABEL_LINES: Array<
   [string, string, string, string, string, string, number]
 > = [
   ["User.firstName User.lastName", "75%", "3%", "35vw", "2pt", "black", 14],
-  ["User.schoolGrade", "80%", "3%", "35vw", "2pt", "black", 12],
 ];
 
 // =============================================================================
@@ -341,8 +340,8 @@ export default async function handle(
       console.log("Printing user labels via API");
       try {
         // Four different ways to call:
-        // - start & end: for last created users ordered by ID (with optional schoolGrade filter)
-        // - startId & endId: for users in ID range (with optional schoolGrade filter)
+        // - start & end: for last created users ordered by ID
+        // - startId & endId: for users in ID range
         // - id: specific single user
         // - (no params): all users
         let printableUsers;

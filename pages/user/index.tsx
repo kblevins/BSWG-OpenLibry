@@ -154,7 +154,6 @@ export default function UsersPage({ users, rentals }: UsersPageProps) {
               confirmDelete={confirmDelete}
               settingsContent={
                 <UserSearchFilters
-                  grades={[]}
                   onFilterChange={handleFilterChange}
                 />
               }

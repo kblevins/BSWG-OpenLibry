@@ -466,7 +466,7 @@ const CONFIG_SECTIONS: ConfigSection[] = [
         label: tf("userlabels", "USERLABEL_LINE_3", "label"),
         description: tf("userlabels", "USERLABEL_LINE_3", "description"),
         type: "json",
-        default: '["User.schoolGrade","90%","3%","35vw","2pt","black",12]',
+        default: '["","90%","3%","35vw","2pt","black",12]',
       },
       {
         key: "USERLABEL_BARCODE",

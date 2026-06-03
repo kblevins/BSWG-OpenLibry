@@ -29,7 +29,6 @@ interface ReportPropsType {
   overdueCount: number;
   nonExtendableCount: number;
   tagSet: Array<{ topic: string; count: number }>;
-  schoolGradeSet: Array<{ topic: string; count: number }>;
   auditCount: number;
 }
 
@@ -40,7 +39,6 @@ export default function Reports({
   overdueCount,
   nonExtendableCount,
   tagSet,
-  schoolGradeSet,
   auditCount = 0,
 }: ReportPropsType) {
   const userLabelFilters = useUserLabelFilters();
@@ -110,9 +108,7 @@ export default function Reports({
           setEndUserId={userLabelFilters.setEndUserId}
           idUserFilter={userLabelFilters.idUserFilter}
           setIdUserFilter={userLabelFilters.setIdUserFilter}
-          topicsFilter={userLabelFilters.schoolgradeFilter}
-          setTopicsFilter={userLabelFilters.setSchoolgradeFilter}
-          allTopics={schoolGradeSet}
+
         />
         <ReminderCard
           title={t("reportsPage.cardReminder.title")}
@@ -173,7 +169,6 @@ export async function getServerSideProps() {
   });
 
   const tagSet = getBookTopicCounts(allBooks);
-  const schoolGradeSet: Array<{ topic: string; count: number }> = [];
 
   const overdueRentals = rentals.filter((r) => r.remainingDays > 0);
   const overdueCount = new Set(
@@ -206,7 +201,6 @@ export async function getServerSideProps() {
       overdueCount,
       nonExtendableCount,
       tagSet,
-      schoolGradeSet,
       auditCount,
     },
   };

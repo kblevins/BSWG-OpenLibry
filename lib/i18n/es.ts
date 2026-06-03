@@ -67,7 +67,6 @@ export const es: Dictionary = {
     bookPlural: "libros",
 
     userMetaPrefix: "N.º",
-    userMetaGrade: "Curso",
 
     noBorrowedBooks: "No hay libros prestados",
 
@@ -83,7 +82,6 @@ export const es: Dictionary = {
   },
   rentSearchParams: {
     overdue: "Vencido",
-    grade: "Curso",
   },
   rentalPage: {
     serverReachableButFailed:
@@ -116,7 +114,6 @@ export const es: Dictionary = {
     selected: "seleccionado",
     deselect: "Deseleccionar",
     actions: "Acciones",
-    increaseGrade: "Subir de curso",
     deleteUsers: "Eliminar usuarios",
     confirmDelete: "¿Realmente eliminar?",
   },
@@ -127,10 +124,7 @@ export const es: Dictionary = {
     resetTooltip: "Restablecer filtros",
     status: "Estado",
     onlyOverdue: "Solo vencidos",
-    grade: "Curso",
-    allGrades: "Todos los cursos",
     overdueChip: "Vencido",
-    gradeChipPrefix: "Curso",
   },
   userAdminList: {
     noUsersSearch: "No se encontraron usuarios",
@@ -141,7 +135,6 @@ export const es: Dictionary = {
     booksRentedPlural: "libros prestados",
     hasOverdue: "Tiene libros vencidos",
     metaPrefix: "N.º",
-    gradePrefix: "Curso",
     rentalSection: "Libros prestados",
     noBorrowedBooks: "No hay libros prestados",
     edit: "Editar",
@@ -163,7 +156,6 @@ export const es: Dictionary = {
     bookPlural: "libros",
     overdue: "vencido",
     metaPrefix: "N.º",
-    gradePrefix: "Curso",
     sectionPersonalData: "Datos",
     fieldFirstName: "Nombre",
     fieldLastName: "Apellido",
@@ -243,7 +235,6 @@ export const es: Dictionary = {
   userPage: {
     toastUserCreateFailed:
       "No se pudo crear el nuevo usuario. ¿El ID de usuario ya existe?",
-    toastGradeIncreased: "Curso aumentado para los alumnos",
     toastUsersDeleted: "Alumnos eliminados correctamente",
   },
   userDetailPage: {
@@ -591,7 +582,7 @@ export const es: Dictionary = {
             label: "Línea de texto 1",
             description:
               'Primera línea de texto en el carnet. Formato: ["contenido","top","left","ancho","margen","color",tamaño]',
-            hint: "Marcadores: User.firstName, User.lastName, User.schoolGrade",
+            hint: "Marcadores: User.firstName, User.lastName",
           },
           USERLABEL_LINE_2: {
             label: "Línea de texto 2",
@@ -679,11 +670,6 @@ export const es: Dictionary = {
     toId: "Hasta ID",
     filtersHeading: "Filtros",
     singleIdLabel: "Etiqueta para ID de usuario",
-    classFilterLabel: "Filtro de clase",
-    classSelectPlaceholder: "Seleccionar clase…",
-    classSearchPlaceholder: "Buscar clase…",
-    classNotFound: "No se encontró ninguna clase.",
-    filterClear: "Restablecer filtros",
     generatePdf: "Generar PDF",
   },
   bookLabelPrintCard: {
@@ -715,8 +701,8 @@ export const es: Dictionary = {
       "📚 {total} libros • {rented} prestados • {available} disponibles",
   },
   reportUsersPage: {
-    statusBaseOne: "👥 {totalCount} usuario • {grades} cursos",
-    statusBaseMany: "👥 {totalCount} usuarios • {grades} cursos",
+    statusBaseOne: "👥 {totalCount} usuario",
+    statusBaseMany: "👥 {totalCount} usuarios",
     statusInactiveSuffix: "({inactiveCount} inactivos)",
   },
   reportRentalsPage: {
@@ -732,14 +718,11 @@ export const es: Dictionary = {
       "Error en la exportación {action}. Por favor, inténtalo de nuevo.",
     exportScopeHint:
       "La exportación incluye la vista filtrada actual ({count} usuarios).",
-    colKlasse: "Curso",
     colName: "Nombre (búsqueda)",
     colTotal: "Total",
     colHistory: "Historial de préstamos",
-    filterAllGrades: "Todos",
     filterNamePlaceholder: "Escribe un nombre...",
     mobileNamePlaceholder: "Buscar nombre…",
-    mobileGradeAll: "Todos los cursos",
     noResults: "No hay resultados para este filtro",
     cardBooksSuffix: "libros",
     cardEmpty: "Sin préstamos",
@@ -827,7 +810,6 @@ export const es: Dictionary = {
   pdfHistory: {
     titleHistory: "Informe del historial de préstamos",
     subtitleTotal: "{count} usuarios",
-    colKlasse: "Curso",
     colName: "Nombre",
     colTotal: "Total",
     colBooks: "Libros (fecha | ID | título)",

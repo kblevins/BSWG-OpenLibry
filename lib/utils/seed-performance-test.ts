@@ -105,17 +105,7 @@ const LAST_NAMES = [
   "König",
   "Walter",
 ];
-const SCHOOL_GRADES = ["1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b"];
-const TEACHER_NAMES = [
-  "Frau Meier",
-  "Herr Schulze",
-  "Frau Wagner",
-  "Herr Fischer",
-  "Frau Hoffmann",
-  "Herr Braun",
-  "Frau Richter",
-  "Herr Schmidt",
-];
+
 const BOOK_TITLE_PREFIXES = [
   "Das Geheimnis",
   "Die Abenteuer",

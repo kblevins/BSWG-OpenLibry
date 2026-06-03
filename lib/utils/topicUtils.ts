@@ -8,7 +8,7 @@ type TopicCount = {
  * a deduplicated list of { topic, count } objects.
  *
  * Handles both nested arrays (e.g. from splitting book topics)
- * and flat string arrays (e.g. school grades).
+ * and flat string arrays.
  */
 export function convertToTopicCount(
   arr: (string | string[])[],

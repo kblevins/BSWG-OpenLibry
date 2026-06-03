@@ -12,7 +12,6 @@ export default async function handle(
     case "DELETE":
       try {
         if (!req.body) return res.status(404).end("No data provided");
-        //gets a list of user IDs to update the grade
         const userdata = req.body;
 
         const updateResult = await deleteManyUsers(prisma, userdata);
