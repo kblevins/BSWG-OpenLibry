@@ -218,10 +218,8 @@ async function main() {
   const userRows = Array.from({ length: USER_COUNT }, (_, i) => ({
     firstName: pick(FIRST_NAMES),
     lastName: `${pick(LAST_NAMES)} ${i + 1}`,
-    schoolGrade: pick(SCHOOL_GRADES),
-    schoolTeacherName: pick(TEACHER_NAMES),
-    eMail: `nutzer${i + 1}@schule-beispiel.de`,
-    active: Math.random() > 0.05,
+    email: `nutzer${i + 1}@schule-beispiel.de`,
+    active: Math.random() > 0.05 ? "active" : "inactive",
   }));
   for (const batch of chunk(userRows, BATCH_SIZE)) {
     await prisma.user.createMany({ data: batch });
