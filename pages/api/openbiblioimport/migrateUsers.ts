@@ -25,8 +25,7 @@ export default async function handler(
           id: parseInt(u.mbrid),
           lastName: u.last_name,
           firstName: u.first_name,
-          schoolTeacherName: u.school_teacher,
-          schoolGrade: u.school_grade,
+          active: "active",
         } as UserType;
         addUser(prisma, user);
         return user;
