@@ -20,10 +20,7 @@ import { UserType } from "@/entities/UserType";
 import { LogEvents } from "@/lib/logEvents";
 import { businessLogger } from "@/lib/logger";
 import { convertDateToDayString } from "@/lib/utils/dateutils";
-import {
-  getBookTopicCounts,
-  getSchoolGradeCounts,
-} from "@/lib/utils/topicUtils";
+import { getBookTopicCounts } from "@/lib/utils/topicUtils";
 
 interface ReportPropsType {
   users: Array<UserType>;
@@ -176,7 +173,7 @@ export async function getServerSideProps() {
   });
 
   const tagSet = getBookTopicCounts(allBooks);
-  const schoolGradeSet = getSchoolGradeCounts(allUsers);
+  const schoolGradeSet: Array<{ topic: string; count: number }> = [];
 
   const overdueRentals = rentals.filter((r) => r.remainingDays > 0);
   const overdueCount = new Set(

@@ -44,18 +44,3 @@ export function getBookTopicCounts(
   });
   return convertToTopicCount(allTags);
 }
-
-/**
- * Extracts school grade counts from users.
- */
-export function getSchoolGradeCounts(
-  users: Array<{ schoolGrade?: string | null }>,
-): TopicCount[] {
-  const allGrades: string[] = [];
-  users.forEach((u) => {
-    if (u.schoolGrade) {
-      allGrades.push(u.schoolGrade);
-    }
-  });
-  return convertToTopicCount(allGrades);
-}
