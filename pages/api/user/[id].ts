@@ -91,7 +91,6 @@ export default async function handle(
             userId: id,
             lastName: userdata.lastName,
             firstName: userdata.firstName,
-            schoolGrade: userdata.schoolGrade,
           },
           "User updated successfully"
         );

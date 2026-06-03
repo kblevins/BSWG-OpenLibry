@@ -20,9 +20,15 @@ import { Dispatch, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -300,9 +306,8 @@ export default function UserEditForm({
                   {user.firstName} {user.lastName}
                 </h2>
                 <p className="text-sm text-white/60">
-                  {t("userEditForm.metaPrefix")} {user.id} ·{" "}
-                  {t("userEditForm.gradePrefix")} {user.schoolGrade}
-                  {user.schoolTeacherName && ` · ${user.schoolTeacherName}`}
+                  {t("userEditForm.metaPrefix")} {user.id}
+                  {user.email && ` · ${user.email}`}
                 </p>
               </div>
             </div>
@@ -354,21 +359,20 @@ export default function UserEditForm({
               onChange={(v) => setUserData({ ...user, lastName: v })}
             />
             <FormField
-              id="schoolGrade"
-              label={t("userEditForm.fieldGrade")}
-              value={user.schoolGrade ?? ""}
+              id="email"
+              label={t("userEditForm.fieldEmail")}
+              value={user.email ?? ""}
               disabled={!editable}
-              required
               tabIndex={3}
-              onChange={(v) => setUserData({ ...user, schoolGrade: v })}
+              onChange={(v) => setUserData({ ...user, email: v })}
             />
             <FormField
-              id="schoolTeacherName"
-              label={t("userEditForm.fieldTeacher")}
-              value={user.schoolTeacherName ?? ""}
+              id="phone"
+              label={t("userEditForm.fieldPhone")}
+              value={user.phone ?? ""}
               disabled={!editable}
               tabIndex={4}
-              onChange={(v) => setUserData({ ...user, schoolTeacherName: v })}
+              onChange={(v) => setUserData({ ...user, phone: v })}
             />
             <FormField
               id="createdAt"
@@ -389,40 +393,39 @@ export default function UserEditForm({
             />
           </div>
 
-          {/* Active checkbox */}
-          <label
-            htmlFor="user-active"
-            className={cn(
-              "mt-4 flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/30",
-              user.active ? "border-primary" : "border-border",
-              !editable && "pointer-events-none opacity-60",
-            )}
-            tabIndex={5}
-          >
-            <Checkbox
-              id="user-active"
-              checked={user.active}
+          {/* Notes */}
+          <div className="mt-4 space-y-1.5">
+            <Label htmlFor="notes">{t("userEditForm.fieldNotes")}</Label>
+            <textarea
+              id="notes"
+              value={user.notes ?? ""}
               disabled={!editable}
-              onCheckedChange={() =>
-                setUserData({ ...user, active: !user.active })
-              }
+              rows={3}
+              className={cn(
+                "w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+              )}
+              onChange={(e) => setUserData({ ...user, notes: e.target.value })}
             />
-            <div>
-              <span
-                className={cn(
-                  "text-sm font-medium",
-                  user.active ? "text-foreground" : "text-muted-foreground",
-                )}
-              >
-                {t("userEditForm.activeLabel")}
-              </span>
-              <p className="text-xs text-muted-foreground/60">
-                {user.active
-                  ? t("userEditForm.activeHintActive")
-                  : t("userEditForm.activeHintInactive")}
-              </p>
-            </div>
-          </label>
+          </div>
+
+          {/* Status select */}
+          <div className="mt-4 space-y-1.5">
+            <Label htmlFor="user-status">{t("userEditForm.activeLabel")}</Label>
+            <Select
+              value={user.active}
+              onValueChange={(v) => setUserData({ ...user, active: v })}
+              disabled={!editable}
+            >
+              <SelectTrigger id="user-status" className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="suspended">Suspended</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* ═══════════════════════════════════════════════ */}

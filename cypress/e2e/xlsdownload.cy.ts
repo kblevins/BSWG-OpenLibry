@@ -72,12 +72,12 @@ describe("Excel Export", () => {
       expect(columns).to.include("ID");
       expect(columns).to.include("First Name");
       expect(columns).to.include("Last Name");
-      expect(columns).to.include("School Grade");
+      expect(columns).to.include("Email");
+      expect(columns).to.include("Phone");
+      expect(columns).to.include("Notes");
       expect(columns).to.include("Active");
       expect(columns).to.include("Created At");
       expect(columns).to.include("Updated At");
-      expect(columns).to.include("Teacher");
-      expect(columns).to.include("Email");
       expect(columns.length).to.eq(9);
     });
 

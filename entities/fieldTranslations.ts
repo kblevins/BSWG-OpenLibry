@@ -3,26 +3,8 @@ import { LOCALE } from "@/lib/i18n";
 /**
  * Field translations for DB-level labels — user, book, rental, and audit
  * column names plus rental status values.
- *
- * This module exports a single `translations` object whose structure
- * matches the pre-i18n version exactly. The only difference is that the
- * values are chosen at module load time based on OPENLIBRY_LOCALE.
- *
- * Keeping the export shape identical means consumers
- * (BookField, BookDateField, UserField, StatusBadge, BookSelect,
- * pages/reports/*) need no changes:
- *
- *   translations["books"][fieldType]        — still works
- *   translations.rentalStatus.available     — still works
- *   keyof typeof translations.rentalStatus  — still produces the same union
- *
- * To add new locales, add a sibling dictionary object and extend the
- * selector at the bottom.
  */
 
-// ─────────────────────────────────────────────────────────────────────────────
-// German (source of truth)
-// ─────────────────────────────────────────────────────────────────────────────
 const fieldTranslationsDe = {
   users: {
     createdAt: "Erstellt",
@@ -30,10 +12,10 @@ const fieldTranslationsDe = {
     id: "id",
     lastName: "Nachname",
     firstName: "Vorname",
-    schoolGrade: "Klasse",
-    schoolTeacherName: "Lehrende",
-    eMail: "eMail",
-    active: "Aktiv",
+    email: "E-Mail",
+    phone: "Telefon",
+    notes: "Notizen",
+    active: "Status",
     books: "Bücher",
   },
   books: {
@@ -70,7 +52,6 @@ const fieldTranslationsDe = {
     id: "id",
     lastName: "Nachname",
     firstName: "Vorname",
-    schoolGrade: "Klasse",
     title: "Titel",
     renewalCount: "Verlängert",
     dueDate: "Rückgabe",
@@ -95,13 +76,6 @@ const fieldTranslationsDe = {
   },
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// English
-//
-// Typed against the German object's shape so missing or extra keys fail
-// the build. Note that "id", "ISBN", and "eMail" are kept as-is —
-// identifiers/abbreviations that are the same across both languages.
-// ─────────────────────────────────────────────────────────────────────────────
 const fieldTranslationsEn: typeof fieldTranslationsDe = {
   users: {
     createdAt: "Created",
@@ -109,10 +83,10 @@ const fieldTranslationsEn: typeof fieldTranslationsDe = {
     id: "id",
     lastName: "Last name",
     firstName: "First name",
-    schoolGrade: "Grade",
-    schoolTeacherName: "Teacher",
-    eMail: "eMail",
-    active: "Active",
+    email: "Email",
+    phone: "Phone",
+    notes: "Notes",
+    active: "Status",
     books: "Books",
   },
   books: {
@@ -149,7 +123,6 @@ const fieldTranslationsEn: typeof fieldTranslationsDe = {
     id: "id",
     lastName: "Last name",
     firstName: "First name",
-    schoolGrade: "Grade",
     title: "Title",
     renewalCount: "Renewed",
     dueDate: "Due date",
@@ -174,18 +147,6 @@ const fieldTranslationsEn: typeof fieldTranslationsDe = {
   },
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Locale selection
-//
-// Picks the active dictionary at module load. The export name and shape
-// match the pre-i18n version exactly so every existing import and access
-// pattern continues to work:
-//
-//   import { translations } from "@/entities/fieldTranslations";
-//   translations["books"][fieldType]
-//   translations.rentalStatus.available
-//   keyof typeof translations.rentalStatus
-// ─────────────────────────────────────────────────────────────────────────────
 const dictionaries = {
   de: fieldTranslationsDe,
   en: fieldTranslationsEn,

@@ -10,17 +10,16 @@ datasource db {
 }
 
 model User {
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  id                Int      @id @default(autoincrement())
-  lastName          String
-  firstName         String
-  // could be 3A or so
-  schoolGrade       String?
-  schoolTeacherName String?
-  eMail             String?
-  active            Boolean  @default(true)
-  books             Book[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  lastName  String
+  firstName String
+  email     String?
+  phone     String?
+  notes     String?
+  active    String   @default("active")
+  books     Book[]
 }
 
 model LoginUser {

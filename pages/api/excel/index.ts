@@ -216,9 +216,10 @@ export default async function handle(
                   id: u["ID"],
                   lastName: u["Last Name"],
                   firstName: u["First Name"],
-                  schoolGrade: u["School Grade"],
-                  schoolTeacherName: u["Teacher"],
-                  active: u["Active"],
+                  email: u["Email"] || null,
+                  phone: u["Phone"] || null,
+                  notes: u["Notes"] || null,
+                  active: u["Active"] || "active",
                 },
               })
             );

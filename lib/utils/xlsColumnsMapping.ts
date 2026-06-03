@@ -36,8 +36,8 @@ export const xlsusercolumns = [
   { key: "id", header: "ID" },
   { key: "lastName", header: "Last Name" },
   { key: "firstName", header: "First Name" },
-  { key: "schoolGrade", header: "School Grade" },
-  { key: "schoolTeacherName", header: "Teacher" },
+  { key: "email", header: "Email" },
+  { key: "phone", header: "Phone" },
+  { key: "notes", header: "Notes" },
   { key: "active", header: "Active" },
-  { key: "eMail", header: "Email" },
 ];

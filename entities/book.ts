@@ -85,7 +85,6 @@ export async function getRentedBooksWithUsers(client: PrismaClient) {
           select: {
             lastName: true,
             firstName: true,
-            schoolGrade: true,
             id: true,
           },
         },
@@ -130,7 +129,6 @@ export async function getRentedBooksForUser(client: PrismaClient, id: number) {
           select: {
             lastName: true,
             firstName: true,
-            schoolGrade: true,
             id: true,
           },
         },

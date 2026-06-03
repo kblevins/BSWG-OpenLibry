@@ -22,7 +22,6 @@ export default async function handler(
         {
           event: LogEvents.USER_CREATE_ATTEMPT,
           userId: user.id,
-          schoolGrade: user.schoolGrade,
         },
         "Creating a new user",
       );
@@ -34,7 +33,6 @@ export default async function handler(
           {
             event: LogEvents.USER_CREATED,
             userId: result.id,
-            schoolGrade: result.schoolGrade,
           },
           "User created successfully",
         );

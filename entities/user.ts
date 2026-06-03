@@ -32,10 +32,10 @@ export async function getAllUsers(client: PrismaClient) {
     return await client.user.findMany({
       orderBy: [
         {
-          schoolGrade: "asc",
+          lastName: "asc",
         },
         {
-          lastName: "asc",
+          firstName: "asc",
         },
       ],
     });
@@ -83,37 +83,6 @@ export async function getAllUsersOrderById(client: PrismaClient) {
   }
 }
 
-export async function getAllUsersBySchoolGrade(
-  client: PrismaClient,
-  schoolGrade: string
-) {
-  try {
-    return await client.user.findMany({
-      where: { schoolGrade },
-      orderBy: [
-        {
-          id: "asc",
-        },
-      ],
-    });
-  } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError ||
-      e instanceof Prisma.PrismaClientValidationError
-    ) {
-      errorLogger.error(
-        {
-          event: LogEvents.DB_ERROR,
-          operation: "getAllUsersBySchoolGrade",
-          schoolGrade,
-          error: e instanceof Error ? e.message : String(e),
-        },
-        "Error in getAllUsersBySchoolGrade"
-      );
-    }
-    throw e;
-  }
-}
 
 export async function getUsersInIdRange(
   client: PrismaClient,
@@ -244,9 +213,8 @@ export async function addUser(client: PrismaClient, user: UserType) {
       0,
       0
     );
-    return await client.user.create({
-      data: { ...user },
-    });
+    const { id: _id, createdAt: _ca, updatedAt: _ua, ...data } = user;
+    return await client.user.create({ data });
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError ||
@@ -281,12 +249,8 @@ export async function updateUser(
       0,
       id
     );
-    return client.user.update({
-      where: {
-        id,
-      },
-      data: { ...user },
-    });
+    const { id: _id, createdAt: _ca, updatedAt: _ua, ...data } = user;
+    return client.user.update({ where: { id }, data });
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError ||
@@ -306,69 +270,15 @@ export async function updateUser(
   }
 }
 
-export async function increaseUserGrade(
+export async function setUserStatus(
   client: PrismaClient,
-  newGrades: Array<{ id: number; grade: string }>
+  id: number,
+  status: "active" | "inactive" | "suspended"
 ) {
-  try {
-    //create a transaction otherwise for single API calls, there's a connection pool issue
-    const transaction = [] as Array<any>;
-    newGrades.map((i: { id: number; grade: string }) => {
-      transaction.push(
-        client.user.update({
-          where: {
-            id: i.id,
-          },
-          data: { schoolGrade: i.grade },
-        })
-      );
-    });
-
-    const result = await client.$transaction(transaction);
-    businessLogger.info(
-      {
-        event: LogEvents.USER_GRADE_BATCH_UPDATE,
-        userCount: newGrades.length,
-      },
-      "Batch update database operation succeeded"
-    );
-    return result;
-  } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError ||
-      e instanceof Prisma.PrismaClientValidationError
-    ) {
-      errorLogger.error(
-        {
-          event: LogEvents.DB_ERROR,
-          operation: "increaseUserGrade",
-          userCount: newGrades.length,
-          error: e instanceof Error ? e.message : String(e),
-        },
-        "Error in updating batch grades for user"
-      );
-    }
-    throw e;
-  }
-}
-
-export async function disableUser(client: PrismaClient, id: number) {
-  await addAudit(client, "Disable user", id.toString(), 0, id);
+  await addAudit(client, `Set user status: ${status}`, id.toString(), 0, id);
   return await client.user.update({
-    where: {
-      id,
-    },
-    data: { active: false },
-  });
-}
-
-export async function enableUser(client: PrismaClient, id: number) {
-  await addAudit(client, "Enable user", id.toString(), 0, id);
-  return await client.user.update({
-    where: {
-      id,
-    },
-    data: { active: true },
+    where: { id },
+    data: { active: status },
   });
 }
 
