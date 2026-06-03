@@ -5,10 +5,8 @@ async function main() {
       id: 1000,
       lastName: "Mustermann",
       firstName: "Max",
-      schoolGrade: "1",
-      schoolTeacherName: "Minnie",
-      eMail: "max.mustermann@email.de",
-      active: true,
+      email: "max.mustermann@email.de",
+      active: "active",
     },
   });
   const book1 = await prisma.book.create({
