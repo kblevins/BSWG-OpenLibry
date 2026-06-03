@@ -83,7 +83,6 @@ export default defineConfig({
             data: {
               firstName: "Cypress",
               lastName: "Rentaltest",
-              schoolGrade: "3b",
             },
           });
 
