@@ -116,3 +116,6 @@ public/~$hnung-template.docx
 
 # ─── MkDocs build output ───────────────────────────────────────────
 doc/mkdocs/site/
+
+# ─── Magazine scraper working data ──────────────────────────────────
+/scratch
