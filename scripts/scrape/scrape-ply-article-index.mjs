@@ -1,21 +1,30 @@
 /**
- * Scrape PLY Magazine's public article index (plymagazine.com/ply-article-index/),
- * a paginated table of every published article, and group entries by issue into
- * per-issue TOC text.
+ * Scrape a magazine's public article index built on the same WordPress
+ * plugin used by plymagazine.com/ply-article-index/ and
+ * weftmagazine.com/index/ (same publisher, same site builder — identical
+ * table markup/field classes on both), a paginated table of every
+ * published article, and group entries by issue into per-issue TOC text.
  *
  * Usage:
- *   node scripts/scrape/scrape-ply-article-index.mjs
+ *   node scripts/scrape/scrape-ply-article-index.mjs [series-slug] [index-url]
  *
- * Output: scratch/toc/ply-index-raw.json (array of {author, title, issueDate,
- * issueNumber, issueTopic, topics, description}) and scratch/toc/ply-per-issue.json
- * (keyed by issue number -> combined TOC text block).
+ * Defaults to Ply's index if no args given (backward compatible):
+ *   node scripts/scrape/scrape-ply-article-index.mjs
+ *   node scripts/scrape/scrape-ply-article-index.mjs weft https://www.weftmagazine.com/index/
+ *
+ * Output: scratch/toc/<series-slug>-index-raw.json (array of {author, title,
+ * issueDate, issueNumber, issueTopic, topics, description}) and
+ * scratch/toc/<series-slug>-per-issue.json (keyed by issue number ->
+ * combined TOC text block).
  */
 
 import * as cheerio from "cheerio";
 import fs from "fs/promises";
 import path from "path";
 
-const BASE_URL = "https://plymagazine.com/ply-article-index/";
+const [seriesSlugArg, baseUrlArg] = process.argv.slice(2);
+const SERIES_SLUG = seriesSlugArg || "ply";
+const BASE_URL = baseUrlArg || "https://plymagazine.com/ply-article-index/";
 const OUT_DIR = path.resolve("scratch/toc");
 
 async function fetchWithRetry(url, attempts = 6) {
@@ -96,7 +105,7 @@ async function main() {
     allRows.push(...rows);
     // Save incrementally so a crash/rate-limit mid-run doesn't lose earlier pages
     await fs.writeFile(
-      path.join(OUT_DIR, "ply-index-raw.json"),
+      path.join(OUT_DIR, `${SERIES_SLUG}-index-raw.json`),
       JSON.stringify(allRows, null, 2),
       "utf8",
     );
@@ -105,7 +114,7 @@ async function main() {
 
   console.log(`\nCollected ${allRows.length} article rows (expected ${total}).`);
 
-  const rawPath = path.join(OUT_DIR, "ply-index-raw.json");
+  const rawPath = path.join(OUT_DIR, `${SERIES_SLUG}-index-raw.json`);
   await fs.writeFile(rawPath, JSON.stringify(allRows, null, 2), "utf8");
   console.log(`Wrote ${rawPath}`);
 
@@ -136,7 +145,7 @@ async function main() {
       .join("\n"),
   }));
 
-  const perIssuePath = path.join(OUT_DIR, "ply-per-issue.json");
+  const perIssuePath = path.join(OUT_DIR, `${SERIES_SLUG}-per-issue.json`);
   await fs.writeFile(perIssuePath, JSON.stringify(perIssue, null, 2), "utf8");
   console.log(`Wrote ${perIssuePath} (${perIssue.length} issues)`);
 }
